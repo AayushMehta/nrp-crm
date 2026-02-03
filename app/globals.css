@@ -1,0 +1,260 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #f8f7f2;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+  --primary: #1f2f5c;
+  --primary-foreground: #ffffff;
+  --secondary: #f1efe8;
+  --secondary-foreground: #000000;
+  --muted: #f5f5f5;
+  --muted-foreground: #474343;
+  --accent: #c0cced;
+  --accent-foreground: #000000;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #dedede;
+  --input: #e5e5e5;
+  --ring: #dfd786;
+  --chart-1: #12b981;
+  --chart-2: #3a81f6;
+  --chart-3: #2563ef;
+  --chart-4: #1a4eda;
+  --chart-5: #1f3fad;
+  /* Dark Sidebar Theme (Navy/Slate) */
+  --sidebar: #0f172a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: #1e293b;
+  --sidebar-ring: #475569;
+
+  /* Brand Colors */
+  --brand-navy: #1e3a5f;
+  --brand-navy-dark: #152a45;
+  --brand-gold: #d4a853;
+  --brand-gold-light: rgba(212, 168, 83, 0.2);
+
+  /* Semantic Chart Colors */
+  --color-success: #10b981;
+  --color-success-dark: #059669;
+  --color-danger: #ef4444;
+  --color-danger-dark: #dc2626;
+  --color-warning: #f59e0b;
+  --color-warning-dark: #d97706;
+  --color-info: #3b82f6;
+  --color-info-dark: #2563eb;
+  --color-info-darker: #1e40af;
+
+  /* Extended Palette for Charts */
+  --color-purple: #8b5cf6;
+  --color-pink: #ec4899;
+  --color-orange: #f97316;
+  --color-slate: #64748b;
+
+  /* Neutral Grays */
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #e5e5e5;
+  --gray-300: #d1d5db;
+  --gray-400: #a1a1a1;
+  --gray-500: #737373;
+  --gray-600: #6b7280;
+  --gray-700: #474343;
+  --gray-800: #282828;
+  --gray-900: #171717;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --radius: 0.625rem;
+  --shadow-x: 0px;
+  --shadow-y: 1px;
+  --shadow-blur: 10px;
+  --shadow-spread: 1.5px;
+  --shadow-opacity: 0.5;
+  --shadow-color: #cbd4ec;
+  --shadow-2xs: 0px 1px 10px 1.5px hsl(223.6364 46.4789% 86.0784% / 0.25);
+  --shadow-xs: 0px 1px 10px 1.5px hsl(223.6364 46.4789% 86.0784% / 0.25);
+  --shadow-sm: 0px 1px 10px 1.5px hsl(223.6364 46.4789% 86.0784% / 0.5),
+    0px 1px 2px 0.5px hsl(223.6364 46.4789% 86.0784% / 0.5);
+  --shadow: 0px 1px 10px 1.5px hsl(223.6364 46.4789% 86.0784% / 0.5),
+    0px 1px 2px 0.5px hsl(223.6364 46.4789% 86.0784% / 0.5);
+  --shadow-md: 0px 1px 10px 1.5px hsl(223.6364 46.4789% 86.0784% / 0.5),
+    0px 2px 4px 0.5px hsl(223.6364 46.4789% 86.0784% / 0.5);
+  --shadow-lg: 0px 1px 10px 1.5px hsl(223.6364 46.4789% 86.0784% / 0.5),
+    0px 4px 6px 0.5px hsl(223.6364 46.4789% 86.0784% / 0.5);
+  --shadow-xl: 0px 1px 10px 1.5px hsl(223.6364 46.4789% 86.0784% / 0.5),
+    0px 8px 10px 0.5px hsl(223.6364 46.4789% 86.0784% / 0.5);
+  --shadow-2xl: 0px 1px 10px 1.5px hsl(223.6364 46.4789% 86.0784% / 1.25);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #171717;
+  --card-foreground: #fafafa;
+  --popover: #262626;
+  --popover-foreground: #fafafa;
+  --primary: #e5e5e5;
+  --primary-foreground: #171717;
+  --secondary: #262626;
+  --secondary-foreground: #fafafa;
+  --muted: #262626;
+  --muted-foreground: #a1a1a1;
+  --accent: #404040;
+  --accent-foreground: #fafafa;
+  --destructive: #ff6467;
+  --destructive-foreground: #fafafa;
+  --border: #282828;
+  --input: #343434;
+  --ring: #737373;
+  --chart-1: #91c5ff;
+  --chart-2: #3a81f6;
+  --chart-3: #2563ef;
+  --chart-4: #1a4eda;
+  --chart-5: #1f3fad;
+  --sidebar: #171717;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #1447e6;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #262626;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #282828;
+  --sidebar-ring: #525252;
+
+  /* Brand Colors - Dark Mode */
+  --brand-navy: #4a6fa5;
+  --brand-navy-dark: #3a5a8a;
+  --brand-gold: #d4a853;
+  --brand-gold-light: rgba(212, 168, 83, 0.2);
+
+  /* Semantic Chart Colors - Dark Mode (slightly adjusted for dark bg) */
+  --color-success: #10b981;
+  --color-success-dark: #059669;
+  --color-danger: #ef4444;
+  --color-danger-dark: #dc2626;
+  --color-warning: #f59e0b;
+  --color-warning-dark: #d97706;
+  --color-info: #3b82f6;
+  --color-info-dark: #2563eb;
+  --color-info-darker: #1e40af;
+
+  /* Extended Palette for Charts - Dark Mode */
+  --color-purple: #8b5cf6;
+  --color-pink: #ec4899;
+  --color-orange: #f97316;
+  --color-slate: #94a3b8;
+
+  /* Neutral Grays - Dark Mode */
+  --gray-50: #171717;
+  --gray-100: #262626;
+  --gray-200: #343434;
+  --gray-300: #404040;
+  --gray-400: #525252;
+  --gray-500: #737373;
+  --gray-600: #a1a1a1;
+  --gray-700: #d4d4d4;
+  --gray-800: #e5e5e5;
+  --gray-900: #fafafa;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --radius: 0.625rem;
+  --shadow-x: 0px;
+  --shadow-y: 1px;
+  --shadow-blur: 10px;
+  --shadow-spread: 1.5px;
+  --shadow-opacity: 0.5;
+  --shadow-color: oklch(0 0 0);
+  --shadow-2xs: 0px 1px 10px 1.5px hsl(0 0% 0% / 0.25);
+  --shadow-xs: 0px 1px 10px 1.5px hsl(0 0% 0% / 0.25);
+  --shadow-sm: 0px 1px 10px 1.5px hsl(0 0% 0% / 0.5),
+    0px 1px 2px 0.5px hsl(0 0% 0% / 0.5);
+  --shadow: 0px 1px 10px 1.5px hsl(0 0% 0% / 0.5),
+    0px 1px 2px 0.5px hsl(0 0% 0% / 0.5);
+  --shadow-md: 0px 1px 10px 1.5px hsl(0 0% 0% / 0.5),
+    0px 2px 4px 0.5px hsl(0 0% 0% / 0.5);
+  --shadow-lg: 0px 1px 10px 1.5px hsl(0 0% 0% / 0.5),
+    0px 4px 6px 0.5px hsl(0 0% 0% / 0.5);
+  --shadow-xl: 0px 1px 10px 1.5px hsl(0 0% 0% / 0.5),
+    0px 8px 10px 0.5px hsl(0 0% 0% / 0.5);
+  --shadow-2xl: 0px 1px 10px 1.5px hsl(0 0% 0% / 1.25);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

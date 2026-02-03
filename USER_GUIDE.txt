@@ -1,0 +1,1829 @@
+================================================================================
+                    NRP CRM - COMPREHENSIVE USER GUIDE
+                        Version 2.0 - February 2026
+================================================================================
+
+TABLE OF CONTENTS
+=================
+
+1. SYSTEM OVERVIEW
+2. USER ROLES & ACCESS LEVELS
+3. GETTING STARTED
+4. PAGE-BY-PAGE USER FLOWS
+5. FEATURE-SPECIFIC WORKFLOWS
+6. COMMON TASKS & BEST PRACTICES
+7. TROUBLESHOOTING & FAQ
+
+================================================================================
+1. SYSTEM OVERVIEW
+================================================================================
+
+NRP CRM is a comprehensive Client Relationship Management platform designed
+specifically for wealth management firms. The system streamlines:
+
+- Client Onboarding: Automated document collection and verification
+- Portfolio Management: Real-time holdings tracking and performance analytics
+- Communication: Family-based messaging with privacy controls
+- Task Management: 7-state Kanban workflow for operations
+- Compliance: Meeting notes, reminders, and audit trails
+
+KEY FEATURES:
+- Role-based access control (Admin, RM, Client)
+- Privacy filtering (Internal vs. External content)
+- Automated reminders and notifications
+- Document verification workflow
+- Real-time portfolio tracking
+- Multi-RM family support
+
+================================================================================
+2. USER ROLES & ACCESS LEVELS
+================================================================================
+
+ADMIN (Financial Advisor)
+-------------------------
+Access: Full system access to all families and features
+Primary Functions:
+- View system-wide wealth metrics and AUM
+- Manage all client onboarding checklists
+- Verify documents for all families
+- Access all messages (internal and external)
+- Create and manage email templates
+- Oversee all meeting notes and reminders
+- View all tasks across the organization
+
+Key Pages:
+- Admin Dashboard: System-wide overview
+- Onboarding Master: All checklists
+- Email Templates: Communication management
+- Meeting Notes: All client meetings
+- Admin Reminders: System-wide reminders
+
+RELATIONSHIP MANAGER (RM)
+--------------------------
+Access: Assigned families only
+Primary Functions:
+- Manage assigned client portfolios
+- Track onboarding for assigned families
+- Communicate with assigned clients
+- Create and complete tasks for assigned families
+- Schedule meetings and manage calendar
+- Set personal reminders
+
+Key Pages:
+- RM Dashboard: Assigned families overview
+- Calendar: Schedule meetings and events
+- Communications: Messages for assigned families
+- Tasks: Family-specific task management
+- RM Reminders: Personal reminders
+
+FAMILY/CLIENT
+-------------
+Access: Own family data only, external content only
+Primary Functions:
+- View own portfolio and holdings
+- Track onboarding progress
+- Upload required documents
+- View external messages (internal notes hidden)
+- Track meetings (client-visible only)
+- View transactions and performance
+
+Key Pages:
+- Client Dashboard: Portfolio overview
+- Documents: Upload and track documents
+- Communications: External messages only
+- Meetings: Client-visible meeting notes
+
+================================================================================
+3. GETTING STARTED
+================================================================================
+
+3.1 LOGGING IN
+--------------
+1. Navigate to the login page
+2. Enter your username and password
+3. Or use Quick Login buttons for demo accounts:
+   - Admin: admin / admin123
+   - RM: rm / rm123
+   - Client 1: sharma / demo123
+   - Client 2: patel / demo123
+4. Click "Sign In"
+5. You will be automatically redirected to your role-specific dashboard
+
+3.2 FIRST TIME SETUP
+--------------------
+For Admins:
+1. Review system-wide metrics on the dashboard
+2. Check pending document verifications
+3. Review unread messages
+4. Set up email templates in Communications
+
+For RMs:
+1. Review assigned families on the dashboard
+2. Check calendar for upcoming meetings
+3. Review open tasks for assigned families
+4. Set personal reminders for follow-ups
+
+For Clients:
+1. View your portfolio on the dashboard
+2. Check onboarding progress if still onboarding
+3. Upload any pending documents
+4. Review recent messages from your RM
+
+3.3 NAVIGATION
+--------------
+Sidebar Menu:
+- Left sidebar contains all main navigation
+- Dashboard: Your role-specific home page
+- Feature-specific pages (varies by role)
+- User profile and logout at bottom
+
+Top Header:
+- Page title and description
+- Breadcrumb navigation
+- User avatar and role indicator
+
+Mobile Navigation:
+- Hamburger menu icon (top-left)
+- Drawer slides from left
+- Same menu items as desktop
+
+================================================================================
+4. PAGE-BY-PAGE USER FLOWS
+================================================================================
+
+4.1 ADMIN DASHBOARD
+-------------------
+URL: /admin/dashboard
+
+Purpose: System-wide overview of wealth metrics, onboarding, and operations
+
+User Flow:
+1. VIEW METRICS
+   - Top StatCards show: Total AUM, Active Clients, Pending Reviews, Monthly Revenue
+   - Compare metrics month-over-month
+
+2. NAVIGATE TABS
+   a) Overview Tab:
+      - View wealth metrics (AUM by tier)
+      - See performance summary
+      - Check compliance status
+
+   b) Onboarding Tab:
+      - View active checklists count
+      - See pending verifications
+      - Click "View All" to go to Onboarding Master
+
+   c) Meetings Tab:
+      - See upcoming meetings
+      - View recent meeting notes
+      - Click meeting to view details
+
+   d) Messages Tab:
+      - See unread message count
+      - View high-priority messages
+      - Click "View All" to go to Communications
+
+   e) Timeline Tab:
+      - See recent activity across all families
+      - Filter by type (messages, documents, meetings)
+      - View chronological event history
+
+3. QUICK ACTIONS
+   - Click any stat card to go to relevant page
+   - Use tab navigation to switch between views
+   - Click "View All" buttons for detailed pages
+
+Best Practices:
+- Check dashboard daily for overview
+- Review pending items in each tab
+- Use timeline to track recent activity
+- Monitor overdue reviews and compliance issues
+
+---
+
+4.2 ADMIN ONBOARDING
+--------------------
+URL: /admin/onboarding
+
+Purpose: Master view of all client onboarding checklists
+
+User Flow:
+1. VIEW ONBOARDING METRICS
+   - StatCards show: Total Checklists, Pending Verification, In Progress, Completed
+   - Track overall onboarding health
+
+2. FILTER BY STAGE
+   - Click stage tabs: All, KYC & Docs, Data Input, Execution, Completed
+   - See checklists filtered by current stage
+
+3. REVIEW CHECKLIST CARDS
+   Each card shows:
+   - Family name
+   - Service type (NRP Light or NRP 360)
+   - Progress bar with completion percentage
+   - Verification status
+   - Current stage
+
+4. TAKE ACTION
+   - Click "View Details" on any card
+   - Navigate to checklist detail page
+   - Verify or reject documents
+   - Track progress
+
+5. CREATE NEW CHECKLIST
+   - Click "New Checklist" button
+   - Select family
+   - Choose service type (NRP Light or NRP 360)
+   - Indicate if KYC already done
+   - System auto-generates conditional checklist
+
+Best Practices:
+- Prioritize "Pending Verification" items
+- Review KYC & Docs stage first
+- Verify documents within 2 business days
+- Monitor completion percentages
+
+---
+
+4.3 CHECKLIST DETAIL PAGE
+--------------------------
+URL: /admin/onboarding/checklists/[checklistId]
+
+Purpose: Detailed view of individual checklist with document verification
+
+User Flow:
+1. VIEW PROGRESS CARD
+   - See completion percentage
+   - Review total required, uploaded, verified counts
+   - Check current stage
+
+2. REVIEW SERVICE INFO
+   - Service type: NRP Light or NRP 360
+   - KYC status: Already done or new
+   - Client type: Individual, HUF, Trust, Company
+
+3. VERIFY DOCUMENTS (Primary Function)
+   a) Document Verification Panel:
+      - See list of uploaded documents
+      - Review each document:
+        * Document type
+        * Upload date
+        * Uploader name
+        * File name
+
+   b) Verification Actions:
+      - Click "View" to preview document
+      - Click "Verify" to approve
+      - Click "Reject" and provide reason
+      - System updates status automatically
+
+   c) Status Updates:
+      - Verified: Green badge, counted in progress
+      - Rejected: Red badge, reason shown, requires re-upload
+      - Pending: Yellow badge, awaiting verification
+
+4. TRACK CHECKLIST ITEMS
+   - Review all required documents
+   - Check status badges (Required, Pending, Verified, Rejected)
+   - Monitor conditional items (shown/hidden based on selections)
+
+5. COMMUNICATE WITH CLIENT
+   - Click "Request Missing Documents" (future feature)
+   - Send automated reminder via message system
+
+Best Practices:
+- Verify documents promptly (within 2 days)
+- Provide clear rejection reasons
+- Check document quality and completeness
+- Move to next stage when 100% verified
+- Communicate clearly with clients about missing items
+
+---
+
+4.4 EMAIL TEMPLATES
+-------------------
+URL: /admin/communications
+
+Purpose: Manage standardized email templates for client communications
+
+User Flow:
+1. VIEW TEMPLATE LIST
+   - See all templates by category
+   - Categories: Onboarding, Compliance, Reports, General
+   - Track usage statistics
+
+2. CREATE NEW TEMPLATE
+   - Click "New Template"
+   - Enter template name
+   - Select category
+   - Write subject line
+   - Compose email body with variables
+   - Available variables:
+     * {{family_name}}
+     * {{rm_name}}
+     * {{due_date}}
+     * {{document_type}}
+     * {{meeting_date}}
+     * {{portfolio_value}}
+
+3. EDIT EXISTING TEMPLATE
+   - Click "Edit" on template card
+   - Modify subject or body
+   - Update variables
+   - Save changes
+
+4. PREVIEW TEMPLATE
+   - Click "Preview"
+   - See template with sample data
+   - Verify formatting and variable substitution
+
+5. DELETE TEMPLATE
+   - Click "Delete" on unused templates
+   - Confirm deletion
+
+Best Practices:
+- Use clear, professional language
+- Include all necessary variables
+- Test templates with preview
+- Organize by category
+- Keep library up-to-date
+
+---
+
+4.5 MEETING NOTES
+-----------------
+URL: /admin/meeting-notes
+
+Purpose: Document client meetings with privacy controls and action items
+
+User Flow:
+1. VIEW MEETING METRICS
+   - StatCards: Total Meetings, This Week, Action Items, Overdue Actions
+   - Track meeting activity
+
+2. CREATE NEW MEETING NOTE
+   a) Click "New Meeting Note"
+   b) Fill Meeting Details:
+      - Select family
+      - Choose meeting type (Onboarding, Review, Planning, etc.)
+      - Set meeting date and time
+      - Select status (Scheduled, Completed, Cancelled)
+
+   c) Set Privacy Level (CRITICAL):
+      - Internal Only: Hidden from clients completely
+      - Summary Only: Client sees summary field only
+      - Client Visible: Client sees full notes
+
+   d) Add Participants:
+      - Select attendees
+      - Assign roles (Primary Client, Family Member, RM, Admin)
+      - Mark attendance status
+
+   e) Document Meeting:
+      - Enter discussion points (bulleted list)
+      - Document decisions made
+      - Add internal notes (always hidden from clients)
+      - Write client summary (if privacy = Summary Only)
+
+   f) Create Action Items:
+      - Add action item description
+      - Assign to team member
+      - Set due date
+      - System auto-creates reminder
+
+   g) Add Next Steps:
+      - List follow-up actions
+      - Schedule next meeting if needed
+
+3. REVIEW EXISTING NOTES
+   - Filter by family, date, type, privacy level
+   - Search by content
+   - Sort by date (newest first)
+
+4. EDIT MEETING NOTES
+   - Click "Edit" on meeting card
+   - Modify any fields
+   - Update action item status
+   - Add additional notes
+
+5. TRACK ACTION ITEMS
+   - View all action items from meetings
+   - Filter by status (Pending, In Progress, Completed)
+   - Monitor overdue items
+   - Mark as completed when done
+
+Best Practices:
+- Set correct privacy level based on content sensitivity
+- Use "Internal Only" for sensitive discussions
+- Use "Summary Only" for standard meetings with internal analysis
+- Use "Client Visible" for transparent meetings
+- Create action items during meeting
+- Follow up on overdue action items
+- Document decisions clearly
+
+PRIVACY CONTROLS (CRITICAL):
+- Internal notes are ALWAYS hidden from clients
+- Action items shown only if assigned to client
+- Summary Only shows summary field only to clients
+- Client Visible shows full notes to clients
+- Double-check privacy level before saving
+
+---
+
+4.6 ADMIN REMINDERS
+-------------------
+URL: /admin/reminders
+
+Purpose: System-wide reminder management with recurring patterns
+
+User Flow:
+1. VIEW REMINDER METRICS
+   - StatCards: Overdue, Due Today, Due This Week, Completed
+   - Prioritize overdue items
+
+2. REVIEW REMINDER LIST
+   - Grouped by status (Overdue, Today, This Week, Later, Completed, Snoozed)
+   - Priority badges (Low, Medium, High, Urgent)
+   - Family name shown
+   - Due date displayed
+
+3. CREATE NEW REMINDER
+   a) Click "New Reminder"
+   b) Basic Details:
+      - Enter reminder title
+      - Add description (optional)
+      - Select family (optional)
+      - Choose priority (Low, Medium, High, Urgent)
+
+   c) Due Date:
+      - Set due date and time
+
+   d) Recurrence (optional):
+      - Enable recurring
+      - Select pattern (Daily, Weekly, Monthly, Yearly)
+      - Set end condition:
+        * End by date
+        * End after N occurrences
+        * Never end
+
+   e) Assignment:
+      - Assign to user or self
+      - System tracks assigned reminders
+
+4. MANAGE REMINDERS
+   a) Complete Reminder:
+      - Click "Mark Complete"
+      - Add completion notes (optional)
+      - System archives completed reminder
+
+   b) Snooze Reminder:
+      - Click "Snooze"
+      - Select preset: 1 hour, 4 hours, Tomorrow, Next week
+      - Or choose custom date/time
+      - Reminder hidden until snooze expires
+
+   c) Edit Reminder:
+      - Click "Edit"
+      - Modify any fields
+      - Save changes
+
+   d) Delete Reminder:
+      - Click "Delete"
+      - Confirm deletion
+
+5. FILTER AND SEARCH
+   - Filter by priority
+   - Filter by status
+   - Filter by family
+   - Search by title/description
+
+Best Practices:
+- Check overdue reminders daily
+- Set appropriate priority levels
+- Use recurring reminders for regular tasks
+- Snooze instead of ignoring
+- Add notes when completing
+- Review "Due Today" first thing each morning
+
+AUTOMATED REMINDERS:
+System automatically creates reminders for:
+- Document uploaded (verify within 2 days)
+- Document rejected (follow up with client)
+- Checklist completed (schedule onboarding meeting)
+- Meeting scheduled (1 day before, 1 hour before)
+- Action items (on due date)
+
+---
+
+4.7 RM DASHBOARD
+----------------
+URL: /rm/dashboard
+
+Purpose: RM-specific metrics for assigned families
+
+User Flow:
+1. VIEW RM METRICS
+   - StatCards: Total AUM (assigned), My Clients, Avg Returns, Overdue Reviews
+   - Compare to previous month
+
+2. NAVIGATE TABS
+   a) Overview Tab:
+      - Wealth metrics for assigned families
+      - AUM by tier (Tier 1-3, Prospect)
+      - Performance analytics
+
+   b) My Clients Tab:
+      - List of assigned families
+      - Tier badges (Tier 1, 2, 3, Prospect)
+      - Portfolio values
+      - Review status (Current, Due Soon, Overdue)
+      - Click client to view details
+
+   c) Calendar Tab:
+      - View integrated calendar
+      - See upcoming meetings and events
+      - Click event to view details
+      - Click "View Full Calendar" to go to Calendar page
+
+   d) Tasks & Reminders Tab:
+      - See personal tasks
+      - View due reminders
+      - Quick status updates
+      - Click "View All Tasks" or "View All Reminders"
+
+3. QUICK ACTIONS
+   - Click client card to navigate to client details
+   - Click calendar event to view/edit
+   - Click task to update status
+   - Click reminder to complete or snooze
+
+Best Practices:
+- Start day by reviewing dashboard
+- Check "Overdue Reviews" stat
+- Review "My Clients" tab for status updates
+- Use Calendar tab for daily schedule
+- Monitor Tasks & Reminders for action items
+
+---
+
+4.8 RM CALENDAR
+---------------
+URL: /rm/calendar
+
+Purpose: Schedule and manage meetings, calls, deadlines, and reviews
+
+User Flow:
+1. VIEW CALENDAR METRICS
+   - StatCards: Total Events, This Week, High Priority, Upcoming Deadlines
+   - Track scheduling health
+
+2. VIEW CALENDAR GRID
+   - Monthly view with all events
+   - Event dots color-coded by priority
+   - Navigate months with arrows
+   - Click date to see events
+
+3. CREATE NEW EVENT
+   a) Click "New Event" or click on date
+   b) Event Details:
+      - Enter event title
+      - Add description
+      - Select event type (Meeting, Call, Deadline, Review)
+      - Set priority (High, Medium, Low)
+
+   c) Date and Time:
+      - Set start date/time
+      - Set end date/time
+      - For all-day events, check "All Day"
+
+   d) Family Association:
+      - Select associated family (if applicable)
+      - Events appear in family timeline
+
+   e) Save Event:
+      - Click "Create Event"
+      - Event appears on calendar
+
+4. VIEW UPCOMING EVENTS
+   - Right sidebar shows next 5 events
+   - Sorted by date (closest first)
+   - Shows title, date, time, family, priority
+
+5. EDIT/DELETE EVENTS
+   - Click event on calendar
+   - Click "Edit" to modify
+   - Click "Delete" to remove
+   - Confirm deletion
+
+6. FILTER EVENTS
+   - Filter by event type
+   - Filter by priority
+   - Filter by family
+
+Best Practices:
+- Schedule meetings at least 1 week in advance
+- Set high priority for compliance deadlines
+- Associate events with families for tracking
+- Review "Upcoming Events" sidebar daily
+- Use event types consistently
+- Add descriptions for context
+
+---
+
+4.9 RM REMINDERS
+----------------
+URL: /rm/reminders
+
+Purpose: Personal reminder management for assigned families
+
+User Flow:
+- Same as Admin Reminders but filtered to assigned families only
+- See section 4.6 for detailed workflow
+- RMs can only create reminders for assigned families
+- System shows automated reminders for assigned families only
+
+---
+
+4.10 CLIENT DASHBOARD
+---------------------
+URL: /client/dashboard
+
+Purpose: Client-facing portfolio overview and onboarding status
+
+User Flow:
+1. VIEW PORTFOLIO METRICS
+   - StatCards: Portfolio Value, Total Returns, XIRR, Recent Activity
+   - See performance at a glance
+
+2. NAVIGATE TABS
+   a) Portfolio Tab:
+      - View holdings table:
+        * Security name
+        * Asset class
+        * Quantity
+        * Average cost
+        * Current price
+        * Current value
+        * Unrealized gain/loss
+        * Gain percentage
+
+      - Asset Allocation Chart:
+        * Visual breakdown by asset class
+        * Percentages shown
+        * Color-coded categories
+
+      - Portfolio Summary:
+        * Total invested
+        * Current value
+        * Total gain
+        * Gain percentage
+
+   b) Transactions Tab:
+      - Transaction history:
+        * Date
+        * Type (Buy, Sell, Dividend, Interest, Deposit, Withdrawal)
+        * Security name (if applicable)
+        * Amount
+        * Status
+
+      - Transaction Summary:
+        * Total invested
+        * Total withdrawn
+        * Income received
+        * Net cashflow
+
+   c) Onboarding Tab (if still onboarding):
+      - Checklist progress
+      - Document upload status
+      - Required documents list
+      - Upload missing documents
+
+3. REVIEW HOLDINGS
+   - Click on holding for details
+   - See gains/losses
+   - Track performance
+
+4. REVIEW TRANSACTIONS
+   - Filter by type
+   - Filter by date range
+   - Search by security name
+
+Best Practices:
+- Check portfolio regularly
+- Monitor performance metrics
+- Review transaction history monthly
+- Upload documents promptly when onboarding
+- Contact RM with questions
+
+CLIENT PRIVACY:
+- Sees only own family data
+- Internal notes and messages hidden
+- Meeting notes filtered (only client-visible)
+- Action items shown only if assigned to client
+
+---
+
+4.11 CLIENT DOCUMENTS
+---------------------
+URL: /client/documents
+
+Purpose: Upload and track document submission during onboarding
+
+User Flow:
+1. VIEW DOCUMENT STATUS
+   - See all required documents
+   - Status badges: Required, Pending, Verified, Rejected
+
+2. UPLOAD DOCUMENTS
+   a) Click "Upload" on required document
+   b) Select file or drag-and-drop
+   c) Confirm document type
+   d) Click "Upload"
+   e) Status changes to "Pending"
+   f) Await verification from RM/Admin
+
+3. RE-UPLOAD REJECTED DOCUMENTS
+   - View rejection reason
+   - Upload corrected document
+   - Status changes to "Pending" again
+
+4. TRACK PROGRESS
+   - Progress bar shows completion percentage
+   - See verified count vs. total required
+
+Best Practices:
+- Upload clear, readable documents
+- Use correct document type
+- Check rejection reasons carefully
+- Re-upload promptly if rejected
+- Contact RM if unclear about requirements
+
+---
+
+4.12 CLIENT MEETINGS
+--------------------
+URL: /client/meetings
+
+Purpose: View client-visible meeting notes and action items
+
+User Flow:
+1. VIEW MEETING LIST
+   - See all meetings for your family
+   - Filtered by privacy level (only client-visible shown)
+   - Meeting types shown (Onboarding, Review, Planning, etc.)
+
+2. REVIEW MEETING DETAILS
+   - Click meeting card to expand
+   - View meeting date and participants
+   - Read discussion points
+   - Review decisions made
+   - See client summary (if privacy = Summary Only)
+   - View full notes (if privacy = Client Visible)
+
+3. TRACK ACTION ITEMS
+   - See action items assigned to you
+   - Track completion status
+   - Note due dates
+
+Best Practices:
+- Review meeting notes after each meeting
+- Follow up on assigned action items
+- Contact RM with questions
+- Track decisions for reference
+
+CLIENT PRIVACY FILTERING:
+- Internal Only meetings: Not shown
+- Summary Only meetings: Shows summary field only
+- Client Visible meetings: Shows full notes
+- Internal notes: Always hidden
+- Action items: Only yours shown
+
+---
+
+4.13 COMMUNICATIONS (All Roles)
+-------------------------------
+URL: /communications
+
+Purpose: Family-based messaging system with internal/external filtering
+
+User Flow:
+1. VIEW COMMUNICATION METRICS
+   - StatCards: Total Families, Unread Messages, Internal Threads, High Priority
+   - Role-based filtering applied
+
+2. FAMILY LIST (Left Panel)
+   a) View family cards:
+      - Family name with avatar
+      - Last message preview
+      - Unread badge (if any)
+      - RM count indicator (Admin/RM only)
+      - Last message timestamp
+
+   b) Select Family:
+      - Click family card
+      - Right panel shows messages
+
+3. VIEW MESSAGES (Right Panel)
+   a) All Messages Tab:
+      - Chronological timeline
+      - All messages for family
+      - Internal messages shown to Admin/RM only
+      - External messages shown to all
+
+   b) By Conversation Tab:
+      - Messages grouped by thread/topic
+      - Thread subject shown
+      - Unread count per thread
+      - Click thread to expand
+
+4. COMPOSE NEW MESSAGE
+   a) Click "New Message"
+   b) Message Details:
+      - Message content (required)
+      - Select priority (Low, Medium, High)
+      - Select category (Onboarding, Compliance, Reports, General)
+      - Attachments (future feature)
+
+   c) Internal Tagging:
+      - System auto-tags as internal if sender is Admin/RM
+      - No client participants = Internal
+      - With client participants = External
+
+   d) Send Message:
+      - Click "Send"
+      - Message appears in timeline
+      - Family receives notification (future feature)
+
+5. REPLY TO MESSAGE
+   - Click "Reply" on message card
+   - Compose reply
+   - Send
+
+6. SEARCH AND FILTER
+   - Search across family names and message content
+   - Filter by priority (Low, Medium, High)
+   - Filter by category
+   - Filter by internal/external (Admin/RM only)
+
+Best Practices:
+- Use appropriate priority levels
+- Select correct category
+- Be clear and concise
+- Use internal messages for team discussions
+- Use external messages for client communications
+- Review unread messages daily
+
+ROLE-BASED ACCESS:
+- Admin: All families, all messages
+- RM: Assigned families, all messages for those families
+- Family: Own family, external messages only (internal hidden)
+
+MULTI-RM SUPPORT:
+- RMs see all messages for assigned families
+- Even if sent by other RMs
+- Enables team collaboration
+
+---
+
+4.14 TASKS (Admin & RM)
+-----------------------
+URL: /tasks
+
+Purpose: 7-state Kanban board for operational task management
+
+User Flow:
+1. VIEW KANBAN BOARD
+   - 7 columns shown:
+     1. To Do
+     2. In Progress
+     3. In Review
+     4. Pending Document from Client
+     5. Waiting on Client
+     6. Blocked
+     7. Done
+   - Tasks shown as cards in columns
+   - Count displayed in column header
+
+2. VIEW TASK DETAILS
+   Each task card shows:
+   - Task title
+   - Family name
+   - Priority badge (Low, Medium, High, Urgent)
+   - Due date (if set)
+   - Assigned user name
+
+3. CREATE NEW TASK
+   a) Click "New Task"
+   b) Task Details:
+      - Enter task title
+      - Add description
+      - Select family
+      - Choose context type (Onboarding, Compliance, Document, Meeting, General)
+
+   c) Assignment and Priority:
+      - Assign to user or team
+      - Set priority (Low, Medium, High, Urgent)
+      - Set due date (optional)
+
+   d) Initial Status:
+      - New tasks start in "To Do" column
+
+   e) Save Task:
+      - Click "Create Task"
+      - Task appears in To Do column
+
+4. MOVE TASKS (Drag & Drop)
+   - Click and hold task card
+   - Drag to target column
+   - Release to drop
+   - Status updates automatically
+   - For "Blocked" status: System prompts for blocking reason
+   - For "Waiting on Client": System prompts for wait reason
+   - For "Pending Document": System prompts for document type
+
+5. EDIT TASK
+   - Click task card to open detail view
+   - Click "Edit"
+   - Modify any fields
+   - Save changes
+
+6. COMPLETE TASK
+   - Drag to "Done" column
+   - System records completion time
+   - Task archived after 30 days
+
+7. FILTER TASKS
+   - Filter by priority
+   - Filter by family
+   - Filter by assigned user
+   - Filter by due date
+
+Best Practices:
+- Update task status regularly
+- Use appropriate context types
+- Set realistic due dates
+- Provide clear blocking reasons
+- Move to "In Progress" when starting work
+- Use "In Review" for tasks awaiting approval
+- Use "Pending Document" when waiting for client uploads
+- Use "Waiting on Client" for client responses
+- Use "Blocked" for external dependencies
+- Keep "Done" column clean (auto-archives after 30 days)
+
+ROLE-BASED ACCESS:
+- Admin: All tasks
+- RM: Tasks for assigned families only
+- Family: No access (internal tool)
+
+TASK STATES EXPLAINED:
+- To Do: New tasks, not yet started
+- In Progress: Currently being worked on
+- In Review: Awaiting review/approval by supervisor
+- Pending Document from Client: Waiting for client to upload document
+- Waiting on Client: Waiting for client response or decision
+- Blocked: Cannot proceed due to external dependency
+- Done: Task completed
+
+---
+
+4.15 ADMIN CLIENTS
+------------------
+URL: /admin/clients
+
+Purpose: Master list of all families with detailed information
+
+User Flow:
+1. VIEW ALL FAMILIES
+   - Table view with all families
+   - Columns: Family Name, Tier, Portfolio Value, RM, Service Type, Review Status
+
+2. FILTER AND SEARCH
+   - Filter by tier
+   - Filter by service type
+   - Filter by RM
+   - Search by family name
+
+3. VIEW FAMILY DETAILS
+   - Click family row
+   - See complete family information
+   - View assigned RMs
+   - Check review status
+
+Best Practices:
+- Monitor overdue reviews
+- Track tier distribution
+- Ensure RM assignments are current
+
+---
+
+4.16 RM CLIENTS
+---------------
+URL: /rm/clients
+
+Purpose: List of assigned families for RM
+
+User Flow:
+- Same as Admin Clients but filtered to assigned families only
+- See section 4.15 for detailed workflow
+
+---
+
+================================================================================
+5. FEATURE-SPECIFIC WORKFLOWS
+================================================================================
+
+5.1 CLIENT ONBOARDING WORKFLOW (End-to-End)
+--------------------------------------------
+
+Step 1: Create Onboarding Checklist (Admin)
+- Navigate to Admin Dashboard > Onboarding
+- Click "New Checklist"
+- Select family
+- Choose service type (NRP Light or NRP 360)
+- Indicate if KYC already done
+- System generates conditional checklist automatically
+- Required documents adapt based on selections
+
+Step 2: Invite Client for Document Upload (Admin/RM)
+- Navigate to checklist detail page
+- Click "Generate Temp Access" (future feature)
+- System generates secure token with expiry
+- Send access link to client via email
+- Client can upload documents without login
+
+Step 3: Client Uploads Documents
+- Client receives email with secure link
+- Clicks link to access upload portal
+- Views required documents list
+- Uploads each document:
+  * Click "Upload" on required item
+  * Select file (PDF, JPG, PNG)
+  * Confirm upload
+  * Status changes to "Pending"
+- Repeats for all required documents
+
+Step 4: Admin/RM Verifies Documents
+- Receive notification of document upload (automated reminder)
+- Navigate to checklist detail page
+- Review Document Verification Panel
+- For each uploaded document:
+  * Click "View" to preview
+  * Check document quality and completeness
+  * Click "Verify" if acceptable
+  * Or click "Reject" with clear reason
+- System updates status
+- Verified: Green badge, counts toward progress
+- Rejected: Red badge, shows reason, awaits re-upload
+
+Step 5: Client Re-uploads Rejected Documents (if any)
+- Client sees rejection reason
+- Uploads corrected document
+- Status changes to "Pending" again
+- Awaits re-verification
+
+Step 6: Complete Checklist
+- When all documents verified (100% completion)
+- System auto-advances to next stage:
+  * KYC & Documents → Data Input
+  * Data Input → Execution
+  * Execution → Completed
+- System creates automated reminder to schedule onboarding meeting
+
+Step 7: Onboarding Meeting
+- Schedule meeting via Calendar
+- Document meeting in Meeting Notes
+- Set privacy level appropriately
+- Create action items for next steps
+
+Step 8: Client Activation
+- Checklist marked as "Completed"
+- Client gains full access to dashboard
+- Portfolio setup begins
+- Regular client communications commence
+
+TIMELINE: Typical onboarding takes 7-14 days depending on client responsiveness
+
+---
+
+5.2 PORTFOLIO MANAGEMENT WORKFLOW
+----------------------------------
+
+Step 1: Initial Portfolio Setup (Admin/RM)
+- After onboarding completion
+- Navigate to portfolio management (future feature)
+- Create portfolio for family
+- Add initial holdings:
+  * Security name
+  * Asset class
+  * Quantity
+  * Purchase price
+  * Purchase date
+
+Step 2: Record Transactions (Admin/RM)
+- For each buy/sell/dividend/interest:
+- Navigate to transactions
+- Click "New Transaction"
+- Fill transaction details:
+  * Transaction type
+  * Security name (if applicable)
+  * Quantity (for buy/sell)
+  * Price
+  * Amount
+  * Date
+  * Status (Pending, Completed)
+- Save transaction
+- Portfolio updates automatically
+
+Step 3: Client Views Portfolio (Client)
+- Login to Client Dashboard
+- Portfolio Tab shows:
+  * Holdings table with current values
+  * Asset allocation chart
+  * Total gains/losses
+  * Performance metrics
+
+Step 4: Regular Reviews (Admin/RM)
+- Schedule portfolio reviews (quarterly/annually)
+- Document meeting in Meeting Notes
+- Discuss performance and strategy
+- Create action items for changes
+- Update risk assessment if needed
+
+Step 5: Performance Tracking (All Roles)
+- Admin: System-wide AUM and performance
+- RM: Assigned families performance
+- Client: Own portfolio performance
+- Metrics include:
+  * Total returns
+  * XIRR
+  * Asset allocation
+  * Unrealized gains/losses
+
+---
+
+5.3 COMMUNICATION WORKFLOW
+---------------------------
+
+Internal Team Discussion (Admin/RM)
+1. Navigate to Communications
+2. Select family from list
+3. Click "New Message"
+4. Compose message about internal matter
+5. System auto-tags as "Internal" (no client participants)
+6. Send message
+7. Other RMs/Admins see message
+8. Client does NOT see message
+
+Client Communication (Admin/RM to Client)
+1. Navigate to Communications
+2. Select family from list
+3. Click "New Message"
+4. Compose client-facing message
+5. System tags as "External" (client participant)
+6. Send message
+7. Client sees message in their dashboard
+8. Client can reply
+
+Multi-RM Collaboration (Admin/RM)
+1. Family has multiple RMs assigned
+2. RM1 sends message to family
+3. RM2 also assigned to family
+4. RM2 sees RM1's message in Communications
+5. RM2 can reply or add to conversation
+6. Enables seamless team collaboration
+
+---
+
+5.4 MEETING MANAGEMENT WORKFLOW
+--------------------------------
+
+Before Meeting:
+1. Schedule via Calendar
+2. Select event type: Meeting
+3. Set high priority
+4. Associate with family
+5. System creates automated reminder (1 day before, 1 hour before)
+
+During Meeting:
+1. Take notes on paper or digitally
+2. Track key discussion points
+3. Note decisions made
+4. Identify action items
+
+After Meeting:
+1. Navigate to Meeting Notes
+2. Click "New Meeting Note"
+3. Fill meeting details:
+   - Family
+   - Meeting type
+   - Date/time
+   - Status: Completed
+4. Set privacy level:
+   - Internal Only: Sensitive discussions
+   - Summary Only: Standard meetings
+   - Client Visible: Transparent meetings
+5. Add participants with roles
+6. Enter discussion points (bulleted)
+7. Document decisions made
+8. Add internal notes (always hidden)
+9. Write client summary (if Summary Only)
+10. Create action items:
+    - Description
+    - Assigned to
+    - Due date
+    - System auto-creates reminder
+11. Add next steps
+12. Save meeting note
+
+Follow-up:
+1. Review action items regularly
+2. Mark completed when done
+3. Track overdue items
+4. Schedule follow-up meeting if needed
+
+---
+
+5.5 REMINDER & TASK MANAGEMENT WORKFLOW
+----------------------------------------
+
+Automated Reminders (System-Generated):
+- Document uploaded → Reminder to verify (due in 2 days)
+- Document rejected → Reminder to follow up with client
+- Checklist completed → Reminder to schedule meeting
+- Meeting scheduled → Reminders (1 day before, 1 hour before)
+- Action item created → Reminder on due date
+
+Manual Reminders:
+1. Navigate to Reminders
+2. Click "New Reminder"
+3. Fill details:
+   - Title
+   - Description
+   - Family (optional)
+   - Priority
+   - Due date
+4. For recurring reminders:
+   - Enable recurring
+   - Select pattern (Daily, Weekly, Monthly, Yearly)
+   - Set end condition
+5. Assign to user
+6. Save reminder
+
+Daily Reminder Routine:
+Morning:
+1. Check "Due Today" section
+2. Review "Overdue" items
+3. Prioritize by urgency
+4. Complete high-priority items
+
+Throughout Day:
+1. Complete reminders as tasks are done
+2. Add completion notes
+3. Snooze if not ready
+4. Create new reminders as needed
+
+End of Day:
+1. Review remaining "Due Today"
+2. Snooze to tomorrow if needed
+3. Check "Due This Week" for planning
+4. Set reminders for tomorrow's priorities
+
+Task Management:
+1. Create tasks from reminders or independently
+2. Assign to team members
+3. Track progress through 7-state workflow
+4. Update status as work progresses
+5. Move to "Done" when completed
+6. Use "Blocked" for dependencies
+7. Use "Waiting on Client" for client delays
+8. Use "Pending Document" when awaiting uploads
+
+---
+
+5.6 DOCUMENT VERIFICATION WORKFLOW
+-----------------------------------
+
+For Admin/RM:
+1. Receive notification of document upload (automated reminder)
+2. Navigate to Onboarding > Checklist Detail
+3. Locate uploaded document in Verification Panel
+4. Click "View" to preview document
+5. Check document for:
+   - Clarity and readability
+   - Completeness (all pages present)
+   - Correct document type
+   - Valid signatures (if required)
+   - Current information (not expired)
+6. Decision:
+   a) If acceptable:
+      - Click "Verify"
+      - Status changes to "Verified" (green badge)
+      - Counts toward completion progress
+      - Reminder marked as complete
+
+   b) If not acceptable:
+      - Click "Reject"
+      - Provide clear, specific rejection reason
+        Examples:
+        - "Document is not clear, please upload higher quality scan"
+        - "Missing signature on page 3"
+        - "Document expired, please provide current version"
+        - "Wrong document type uploaded"
+      - Status changes to "Rejected" (red badge)
+      - Reason shown to client
+      - Client receives notification (future feature)
+7. Repeat for all uploaded documents
+
+For Client (Re-upload):
+1. View rejected document
+2. Read rejection reason carefully
+3. Prepare corrected document
+4. Upload new version
+5. Status changes to "Pending"
+6. Await re-verification
+
+Best Practices:
+- Verify within 2 business days
+- Provide clear, actionable rejection reasons
+- Check all pages of multi-page documents
+- Verify signatures and dates
+- Ensure document matches required type
+- Be professional and helpful in rejection notes
+
+---
+
+================================================================================
+6. COMMON TASKS & BEST PRACTICES
+================================================================================
+
+6.1 DAILY ROUTINES
+------------------
+
+Admin Daily Routine:
+Morning (9:00 AM):
+- Check Admin Dashboard
+- Review "Pending Reviews" stat
+- Check "Overdue" reminders
+- Review high-priority messages
+- Check pending document verifications
+
+Midday (12:00 PM):
+- Process document verifications
+- Respond to urgent messages
+- Review meeting notes from morning
+- Update task statuses
+
+End of Day (5:00 PM):
+- Complete remaining "Due Today" reminders
+- Review next day's calendar
+- Check unread messages
+- Set priorities for tomorrow
+
+RM Daily Routine:
+Morning (9:00 AM):
+- Check RM Dashboard
+- Review assigned clients status
+- Check calendar for today's meetings
+- Review "Due Today" reminders
+- Check urgent tasks
+
+Throughout Day:
+- Attend scheduled meetings
+- Document meeting notes
+- Respond to client messages
+- Update task progress
+- Complete reminders
+
+End of Day (5:00 PM):
+- Document any undocumented meetings
+- Review assigned families for issues
+- Set reminders for tomorrow
+- Check task board for assigned tasks
+
+Client Daily Routine:
+- Check portfolio performance
+- Review new messages from RM
+- Upload any pending documents
+- Review meeting notes
+- Track onboarding progress (if applicable)
+
+---
+
+6.2 WEEKLY ROUTINES
+-------------------
+
+Admin Weekly Routine:
+Monday:
+- Review week's priorities
+- Check all overdue items
+- Plan week's meetings
+- Review onboarding pipeline
+
+Wednesday:
+- Mid-week check on all checklists
+- Review wealth metrics
+- Process pending verifications
+- Team meeting with RMs
+
+Friday:
+- Week recap and reporting
+- Review completion metrics
+- Plan next week's priorities
+- Follow up on blocked items
+
+RM Weekly Routine:
+Monday:
+- Review assigned families
+- Plan week's client meetings
+- Check overdue reviews
+- Set week's priorities
+
+Mid-week:
+- Client check-ins
+- Portfolio reviews
+- Task progress updates
+
+Friday:
+- Week summary for assigned families
+- Document week's meetings
+- Set reminders for next week
+- Follow up on pending items
+
+---
+
+6.3 BEST PRACTICES BY ROLE
+---------------------------
+
+Admin Best Practices:
+Communication:
+- Respond to messages within 24 hours
+- Use appropriate privacy levels
+- Be professional and clear
+- Use email templates for consistency
+
+Document Verification:
+- Verify within 2 business days
+- Provide clear rejection reasons
+- Be thorough but efficient
+- Maintain quality standards
+
+Task Management:
+- Assign tasks appropriately
+- Set realistic due dates
+- Monitor team workload
+- Follow up on blocked items
+
+Compliance:
+- Ensure all documents verified
+- Monitor overdue reviews
+- Maintain audit trails
+- Keep meeting notes updated
+
+RM Best Practices:
+Client Relationships:
+- Regular communication with assigned families
+- Proactive portfolio reviews
+- Quick response to client messages
+- Professional and personalized service
+
+Task Execution:
+- Keep tasks updated
+- Meet deadlines consistently
+- Communicate delays promptly
+- Complete assigned reminders
+
+Documentation:
+- Document all client meetings
+- Set appropriate privacy levels
+- Create action items during meetings
+- Follow up on commitments
+
+Calendar Management:
+- Schedule meetings in advance
+- Send meeting reminders (future feature)
+- Block time for admin tasks
+- Avoid double-booking
+
+Client Best Practices:
+Document Upload:
+- Upload clear, readable scans
+- Use correct document types
+- Upload promptly when requested
+- Re-upload quickly if rejected
+
+Communication:
+- Read messages from RM carefully
+- Respond to questions promptly
+- Ask for clarification if needed
+- Be professional and respectful
+
+Portfolio Monitoring:
+- Check portfolio regularly
+- Review performance quarterly
+- Understand your holdings
+- Ask questions about investments
+
+Meetings:
+- Attend scheduled meetings
+- Prepare questions in advance
+- Review meeting notes after
+- Complete assigned action items
+
+---
+
+6.4 KEYBOARD SHORTCUTS (Future Feature)
+----------------------------------------
+
+Will be added in future updates:
+- Ctrl+N: New message
+- Ctrl+T: New task
+- Ctrl+R: New reminder
+- Ctrl+K: Quick search
+- Esc: Close dialog
+- Arrow keys: Navigate messages
+- Enter: Send message (in composer)
+
+---
+
+6.5 PERFORMANCE TIPS
+---------------------
+
+For Faster Navigation:
+- Use sidebar navigation instead of back button
+- Bookmark frequently used pages
+- Use browser tabs for multiple pages
+- Use quick filters instead of scrolling
+- Search instead of browsing long lists
+
+For Efficient Workflow:
+- Batch similar tasks together
+- Use templates for repetitive communications
+- Set up recurring reminders for regular tasks
+- Use task board for visual workflow
+- Complete reminders immediately when possible
+
+For Better Organization:
+- Use consistent naming conventions
+- Tag messages with appropriate categories
+- Set priority levels accurately
+- Keep meeting notes structured
+- Archive completed items regularly
+
+---
+
+================================================================================
+7. TROUBLESHOOTING & FAQ
+================================================================================
+
+7.1 COMMON ISSUES
+-----------------
+
+Issue: Cannot login
+Solutions:
+- Check username and password (case-sensitive)
+- Try demo accounts:
+  * Admin: admin / admin123
+  * RM: rm / rm123
+  * Client: sharma / demo123
+- Clear browser cache and try again
+- Try different browser
+- Contact system administrator
+
+Issue: Don't see expected families in list
+Solutions:
+- Check your role: RMs see only assigned families
+- Admin should see all families
+- Clients see only their own family
+- Check filters applied to list
+- Refresh page
+
+Issue: Internal messages showing to client
+Solutions:
+- Check message "is_internal" flag
+- System auto-tags based on participants
+- No client participants = Internal
+- With client participants = External
+- Review message privacy settings
+
+Issue: Document upload fails
+Solutions:
+- Check file size (< 10 MB recommended)
+- Check file type (PDF, JPG, PNG supported)
+- Try different browser
+- Clear browser cache
+- Check internet connection
+- Contact support if persists
+
+Issue: Reminder not showing
+Solutions:
+- Check status filters (not filtered out?)
+- Check if snoozed (check "Snoozed" section)
+- Check if completed (check "Completed" section)
+- Check date filters
+- Refresh page
+
+Issue: Task not moving on Kanban board
+Solutions:
+- Check if drag-and-drop is enabled
+- Try clicking task and using status dropdown
+- Refresh page
+- Check browser compatibility (Chrome, Firefox, Safari recommended)
+- Try desktop if on mobile
+
+Issue: Meeting notes privacy not working
+Solutions:
+- Verify privacy level set correctly
+- Internal Only = Completely hidden from clients
+- Summary Only = Only summary shown to clients
+- Client Visible = Full notes shown
+- Check if viewing as correct role
+- Logout and login again to refresh
+
+Issue: Portfolio values not updating
+Solutions:
+- Check if transactions recorded
+- System calculates automatically
+- Refresh page
+- Check if holding exists
+- Contact RM/Admin for corrections
+
+---
+
+7.2 FREQUENTLY ASKED QUESTIONS
+-------------------------------
+
+Q: How do I add a new family?
+A: (Admin only) Navigate to Admin Clients > New Family (future feature)
+   Current MVP uses sample data only
+
+Q: How do I assign an RM to a family?
+A: (Admin only) Navigate to Family details > Assign RM (future feature)
+   Current MVP has fixed RM assignments
+
+Q: Can clients see internal messages?
+A: No. Internal messages are automatically hidden from clients. Only messages
+   with client participants are visible to families.
+
+Q: How long does onboarding take?
+A: Typical onboarding takes 7-14 days depending on:
+   - Document availability from client
+   - Verification speed by Admin/RM
+   - Completeness of initial uploads
+   - Service type (NRP Light vs NRP 360)
+
+Q: What's the difference between NRP Light and NRP 360?
+A: NRP Light: Basic wealth management services with simplified documentation
+   NRP 360: Comprehensive wealth management with full documentation requirements
+
+Q: Can I delete a message?
+A: Not currently. Messages are permanent for audit trail purposes.
+   Future feature may allow archiving.
+
+Q: How do I generate reports?
+A: Reporting feature coming in future update. Currently export data manually
+   from each page.
+
+Q: Can I customize email templates?
+A: Yes (Admin only). Navigate to Admin Communications to create, edit, and
+   delete email templates.
+
+Q: How do I change my password?
+A: Navigate to user profile (future feature). Current MVP has fixed passwords
+   for demo accounts.
+
+Q: Can I access from mobile?
+A: Yes. The platform is mobile-responsive. Use any modern mobile browser.
+
+Q: What file types are supported for documents?
+A: Currently: PDF, JPG, PNG
+   Future: DOCX, XLSX may be added
+
+Q: How do I know if a client uploaded a document?
+A: Automated reminder created on document upload. Check Reminders page or
+   Onboarding checklist for pending verifications.
+
+Q: Can I schedule recurring meetings?
+A: Not currently. Create individual meeting events. Recurring events feature
+   coming in future update.
+
+Q: How do I export portfolio data?
+A: Export feature coming in future update. Currently take screenshots or
+   manually copy data.
+
+Q: What happens to completed tasks?
+A: Tasks in "Done" column are archived after 30 days. They remain accessible
+   in completed tasks view.
+
+Q: Can I assign multiple RMs to one family?
+A: Yes. Multi-RM support is built-in. All assigned RMs see all messages for
+   that family.
+
+Q: How do I mark a review as overdue?
+A: System automatically calculates based on "Next Review Date" field. Update
+   the field to change due date.
+
+Q: Can clients create tasks?
+A: No. Tasks are internal tools for Admin/RM only. Clients cannot access the
+   Tasks page.
+
+Q: How do I filter messages by date?
+A: Use search functionality and date filters on Communications page.
+
+Q: What is XIRR?
+A: Extended Internal Rate of Return - a measure of portfolio performance that
+   accounts for the timing and amount of cashflows. Shows annualized return.
+
+Q: How are asset allocation percentages calculated?
+A: System calculates based on current value of each asset class divided by
+   total portfolio value. Updates automatically as holdings change.
+
+Q: Can I undo a document verification?
+A: Not currently. If verified incorrectly, reject the document with explanation
+   and client will need to re-upload.
+
+Q: How do I add a new document type to checklist?
+A: (Admin only) Modify checklist template in system configuration (future
+   feature). Current MVP has fixed document types.
+
+---
+
+7.3 ERROR MESSAGES
+------------------
+
+Error: "Unauthorized access"
+Meaning: You don't have permission to view this page
+Solution: Check your role and assigned families. Contact admin if incorrect.
+
+Error: "Family not found"
+Meaning: The family ID in URL doesn't exist or you don't have access
+Solution: Check URL, refresh page, or contact admin
+
+Error: "Document too large"
+Meaning: File size exceeds maximum allowed
+Solution: Compress file or upload lower resolution version (< 10 MB)
+
+Error: "Invalid file type"
+Meaning: File type not supported
+Solution: Convert to PDF, JPG, or PNG and try again
+
+Error: "Failed to save"
+Meaning: Data couldn't be saved to localStorage
+Solution: Check browser storage settings, clear cache, try again
+
+Error: "Session expired"
+Meaning: Your login session has timed out
+Solution: Login again
+
+---
+
+7.4 BROWSER COMPATIBILITY
+--------------------------
+
+Supported Browsers:
+- Google Chrome (latest version) ✅ Recommended
+- Mozilla Firefox (latest version) ✅
+- Safari (latest version) ✅
+- Microsoft Edge (latest version) ✅
+
+Not Supported:
+- Internet Explorer 11 or earlier ❌
+
+Recommended Settings:
+- JavaScript enabled
+- Cookies enabled
+- LocalStorage enabled
+- Pop-ups allowed for this site
+
+---
+
+7.5 GETTING HELP
+----------------
+
+For Technical Support:
+- Contact system administrator
+- Email: support@nrpcrm.com (example)
+- Phone: +91-XXX-XXX-XXXX (example)
+
+For Feature Requests:
+- Submit feedback through user profile (future feature)
+- Contact development team
+- Email: features@nrpcrm.com (example)
+
+For Training:
+- Admin training available for new users
+- RM onboarding sessions scheduled monthly
+- Client tutorial videos (coming soon)
+
+---
+
+================================================================================
+END OF USER GUIDE
+================================================================================
+
+Document Version: 2.0
+Last Updated: February 2026
+Maintained by: NRP Development Team
+
+For latest updates and documentation, visit: [Internal Wiki URL]
+
+================================================================================

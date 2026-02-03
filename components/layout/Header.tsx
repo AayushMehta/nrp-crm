@@ -1,0 +1,35 @@
+'use client';
+
+import { Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthContext';
+
+interface HeaderProps {
+  onMenuClick: () => void;
+}
+
+export function Header({ onMenuClick }: HeaderProps) {
+  const { user } = useAuth();
+
+  return (
+    <header className="flex h-16 items-center gap-4 border-b bg-white px-6">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="md:hidden"
+        onClick={onMenuClick}
+      >
+        <Menu className="h-5 w-5" />
+      </Button>
+
+      <div className="flex-1" />
+
+      <div className="flex items-center gap-4">
+        <div className="text-right">
+          <p className="text-sm font-medium">{user?.name}</p>
+          <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
+        </div>
+      </div>
+    </header>
+  );
+}
