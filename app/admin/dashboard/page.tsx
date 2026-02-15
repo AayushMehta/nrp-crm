@@ -18,6 +18,8 @@ import {
   MessageSquare,
   IndianRupee,
   FileCheck,
+  UserCheck,
+  ClipboardList,
 } from "lucide-react";
 import { ChecklistService } from "@/lib/services/checklist-service";
 import { MeetingNoteService } from "@/lib/services/meeting-note-service";
@@ -26,6 +28,12 @@ import { ChecklistMaster } from "@/components/onboarding/ChecklistMaster";
 import { WealthMetricsService } from "@/lib/services/wealth-metrics-service";
 import { PortfolioService } from "@/lib/services/portfolio-service";
 import { UserFlowSection } from "@/components/ui/user-flow-section";
+import { BaseAreaChart } from "@/components/charts/BaseAreaChart";
+import { BaseBarChart } from "@/components/charts/BaseBarChart";
+import { BasePieChart } from "@/components/charts/BasePieChart";
+import { CHART_COLORS } from "@/lib/chart-colors";
+import { motion } from "framer-motion";
+import { cardStaggerVariants, pageVariants } from "@/lib/animation-utils";
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState({
@@ -59,6 +67,16 @@ export default function AdminDashboardPage() {
     };
   }, []);
 
+  // Chart data
+  const chartData = useMemo(() => {
+    return {
+      historicalAUM: WealthMetricsService.getHistoricalAUM(12),
+      tierDistribution: WealthMetricsService.getAUMByTierForChart(),
+      revenueBreakdown: WealthMetricsService.getRevenueByServiceForChart(),
+      clientStatus: WealthMetricsService.getClientStatusSummary(),
+    };
+  }, []);
+
   useEffect(() => {
     const checklistStats = ChecklistService.getStats();
     const meetingStats = MeetingNoteService.getStats();
@@ -85,11 +103,22 @@ export default function AdminDashboardPage() {
 
   return (
     <AppLayout>
-      <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 min-h-screen">
-        <div className="mb-8">
+      <motion.div
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 min-h-screen"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mb-8"
+        >
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">CRM Dashboard</h1>
           <p className="text-muted-foreground mt-2">Manage client relationships and communications</p>
-        </div>
+        </motion.div>
 
         {/* Wealth Stats Cards */}
         <div className="grid gap-6 md:grid-cols-4">
@@ -137,51 +166,158 @@ export default function AdminDashboardPage() {
             <TabsTrigger value="timeline">Timeline</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-4">
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card className="rounded-xl border shadow-sm">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold">Recent Activity</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-green-100 rounded-lg">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">Document Verified</p>
-                      <p className="text-xs text-muted-foreground">2 hours ago</p>
-                    </div>
+          <TabsContent value="overview" className="space-y-6">
+            {/* Alert Banner for Compliance Issues */}
+            {wealthStats.compliance_pending > 0 && (
+              <div className="rounded-lg border-l-4 border-orange-500 bg-orange-50 dark:bg-orange-950/20 p-4">
+                <div className="flex items-center gap-3">
+                  <AlertCircle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-orange-900 dark:text-orange-100">
+                      {wealthStats.compliance_pending} Compliance Review{wealthStats.compliance_pending > 1 ? 's' : ''} Overdue
+                    </p>
+                    <p className="text-xs text-orange-700 dark:text-orange-300 mt-1">
+                      Risk assessments require immediate attention
+                    </p>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Users className="h-4 w-4 text-blue-600" />
+                  <Button size="sm" variant="outline" className="border-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/30">
+                    Review Now
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Charts Grid */}
+            <div className="grid gap-6 md:grid-cols-3">
+              {/* System AUM Trend - Spans 2 columns */}
+              <div className="md:col-span-2">
+                <BaseAreaChart
+                  data={chartData.historicalAUM.map(item => ({
+                    name: item.month,
+                    value: item.value,
+                  }))}
+                  title="System AUM Trend"
+                  description="12-month assets under management history"
+                  dataKey="value"
+                  xAxisKey="name"
+                  color={CHART_COLORS.tiers.tier_1}
+                  gradientId="systemAUMGradient"
+                  formatType="currency"
+                  height={350}
+                />
+              </div>
+
+              {/* Revenue Breakdown Pie Chart */}
+              <BasePieChart
+                data={chartData.revenueBreakdown.map(item => ({
+                  name: item.name,
+                  value: item.value,
+                }))}
+                title="Revenue by Service"
+                description="Monthly fee breakdown"
+                colors={[CHART_COLORS.services.nrp_360, CHART_COLORS.services.nrp_light]}
+                formatType="currency"
+                showLegend={true}
+                height={350}
+              />
+            </div>
+
+            {/* Second Row - Tier Distribution */}
+            <div className="grid gap-6 md:grid-cols-1">
+              <BaseBarChart
+                data={chartData.tierDistribution.map((item, index) => ({
+                  name: item.name,
+                  value: item.value,
+                  color: [
+                    CHART_COLORS.tiers.tier_1,
+                    CHART_COLORS.tiers.tier_2,
+                    CHART_COLORS.tiers.tier_3,
+                    CHART_COLORS.tiers.prospect,
+                  ][index],
+                }))}
+                title="AUM by Client Tier"
+                description="Asset distribution across client segments"
+                dataKey="value"
+                xAxisKey="name"
+                formatType="currency"
+                layout="horizontal"
+                height={280}
+              />
+            </div>
+
+            {/* Client Status Grid */}
+            <div className="grid gap-4 md:grid-cols-4">
+              <Card className="rounded-lg border shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Onboarding</p>
+                      <p className="text-2xl font-bold mt-2">{chartData.clientStatus.onboarding_pending}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Pending verification</p>
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">New Onboarding Created</p>
-                      <p className="text-xs text-muted-foreground">5 hours ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <Calendar className="h-4 w-4 text-purple-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">Meeting Scheduled</p>
-                      <p className="text-xs text-muted-foreground">Yesterday</p>
+                    <div className="p-3 bg-blue-100 dark:bg-blue-950 rounded-lg">
+                      <UserCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="rounded-xl border shadow-sm">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
+              <Card className="rounded-lg border shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Compliance</p>
+                      <p className="text-2xl font-bold mt-2">{chartData.clientStatus.compliance_overdue}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Overdue reviews</p>
+                    </div>
+                    <div className={`p-3 rounded-lg ${chartData.clientStatus.compliance_overdue > 0 ? 'bg-orange-100 dark:bg-orange-950' : 'bg-green-100 dark:bg-green-950'}`}>
+                      <FileCheck className={`h-5 w-5 ${chartData.clientStatus.compliance_overdue > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-green-600 dark:text-green-400'}`} />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="rounded-lg border shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Meetings</p>
+                      <p className="text-2xl font-bold mt-2">{chartData.clientStatus.meetings_this_month}</p>
+                      <p className="text-xs text-muted-foreground mt-1">This month</p>
+                    </div>
+                    <div className="p-3 bg-purple-100 dark:bg-purple-950 rounded-lg">
+                      <Calendar className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="rounded-lg border shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Documents</p>
+                      <p className="text-2xl font-bold mt-2">{chartData.clientStatus.documents_pending}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Pending review</p>
+                    </div>
+                    <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                      <ClipboardList className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Quick Actions moved to bottom */}
+            <Card className="rounded-xl border shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-3 md:grid-cols-4">
                   <Button className="w-full justify-start" variant="outline">
                     <Users className="mr-2 h-4 w-4" />
-                    Create New Client
+                    Create Client
                   </Button>
                   <Button className="w-full justify-start" variant="outline">
                     <Calendar className="mr-2 h-4 w-4" />
@@ -195,9 +331,9 @@ export default function AdminDashboardPage() {
                     <Bell className="mr-2 h-4 w-4" />
                     Create Reminder
                   </Button>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="onboarding">
@@ -307,7 +443,7 @@ export default function AdminDashboardPage() {
             ]
           }}
         />
-      </div>
+      </motion.div>
     </AppLayout>
   );
 }

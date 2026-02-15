@@ -1,6 +1,11 @@
+"use client";
+
 import { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { Sparkline } from '@/components/charts/Sparkline';
+import { motion } from 'framer-motion';
+import { cardStaggerVariants } from '@/lib/animation-utils';
 
 interface StatCardProps {
   title: string;
@@ -12,6 +17,9 @@ interface StatCardProps {
     value: number;
     isPositive: boolean;
   };
+  sparklineData?: number[];
+  sparklineColor?: string;
+  variant?: "default" | "glass" | "gradient";
   className?: string;
 }
 
@@ -22,50 +30,118 @@ export function StatCard({
   icon: Icon,
   iconClassName,
   trend,
+  sparklineData,
+  sparklineColor,
+  variant = "default",
   className,
 }: StatCardProps) {
-  // Extract background color from iconClassName for the icon container
-  const getIconBgColor = () => {
-    if (iconClassName?.includes('text-blue')) return 'bg-blue-100 dark:bg-blue-900/20';
-    if (iconClassName?.includes('text-green')) return 'bg-green-100 dark:bg-green-900/20';
-    if (iconClassName?.includes('text-red')) return 'bg-red-100 dark:bg-red-900/20';
-    if (iconClassName?.includes('text-yellow')) return 'bg-yellow-100 dark:bg-yellow-900/20';
-    if (iconClassName?.includes('text-orange')) return 'bg-orange-100 dark:bg-orange-900/20';
-    if (iconClassName?.includes('text-purple')) return 'bg-purple-100 dark:bg-purple-900/20';
-    if (iconClassName?.includes('text-amber')) return 'bg-amber-100 dark:bg-amber-900/20';
-    return 'bg-gray-100 dark:bg-gray-900/20';
+  // Extract gradient color from iconClassName for the icon container
+  const getIconBgStyle = () => {
+    if (iconClassName?.includes('text-blue')) {
+      return {
+        background: 'linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%)',
+        shadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25)',
+      };
+    }
+    if (iconClassName?.includes('text-green')) {
+      return {
+        background: 'linear-gradient(135deg, rgb(16, 185, 129) 0%, rgb(5, 150, 105) 100%)',
+        shadow: '0 4px 14px 0 rgba(16, 185, 129, 0.25)',
+      };
+    }
+    if (iconClassName?.includes('text-red')) {
+      return {
+        background: 'linear-gradient(135deg, rgb(239, 68, 68) 0%, rgb(220, 38, 38) 100%)',
+        shadow: '0 4px 14px 0 rgba(239, 68, 68, 0.25)',
+      };
+    }
+    if (iconClassName?.includes('text-orange')) {
+      return {
+        background: 'linear-gradient(135deg, rgb(249, 115, 22) 0%, rgb(234, 88, 12) 100%)',
+        shadow: '0 4px 14px 0 rgba(249, 115, 22, 0.25)',
+      };
+    }
+    if (iconClassName?.includes('text-purple')) {
+      return {
+        background: 'linear-gradient(135deg, rgb(139, 92, 246) 0%, rgb(124, 58, 237) 100%)',
+        shadow: '0 4px 14px 0 rgba(139, 92, 246, 0.25)',
+      };
+    }
+    if (iconClassName?.includes('text-amber')) {
+      return {
+        background: 'linear-gradient(135deg, rgb(245, 158, 11) 0%, rgb(217, 119, 6) 100%)',
+        shadow: '0 4px 14px 0 rgba(245, 158, 11, 0.25)',
+      };
+    }
+    return {
+      background: 'linear-gradient(135deg, rgb(107, 114, 128) 0%, rgb(75, 85, 99) 100%)',
+      shadow: '0 4px 14px 0 rgba(107, 114, 128, 0.25)',
+    };
   };
 
+  const iconStyle = getIconBgStyle();
+
   return (
-    <Card className={cn('rounded-xl border shadow-sm hover:shadow-md transition-shadow', className)}>
-      <CardContent className="pt-6">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold mt-1">{value}</p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      className="h-full"
+    >
+      <Card variant={variant} className={cn('h-full', className)}>
+        <CardContent className="pt-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex-1">
+              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{title}</p>
+              <p className="text-3xl font-bold mt-2 tabular-nums">{value}</p>
+            </div>
+            <motion.div
+              className="p-3 rounded-xl ml-4"
+              style={{
+                background: iconStyle.background,
+                boxShadow: iconStyle.shadow,
+              }}
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            >
+              <Icon className="h-6 w-6 text-white" />
+            </motion.div>
+          </div>
+
+          {/* Sparkline chart if data provided */}
+          {sparklineData && sparklineData.length > 0 && (
+            <div className="mb-3 -mx-2">
+              <Sparkline
+                data={sparklineData.map(value => ({ value }))}
+                color={sparklineColor || (trend?.isPositive ? '#10b981' : '#3b82f6')}
+                height={40}
+                showArea={true}
+              />
+            </div>
+          )}
+
+          <div className="flex items-center justify-between">
             {description && (
-              <p className="text-xs text-muted-foreground mt-1">{description}</p>
+              <p className="text-xs text-muted-foreground">{description}</p>
             )}
             {trend && (
-              <div className="flex items-center gap-1 mt-1">
+              <div className="flex items-center gap-1">
                 <span
                   className={cn(
-                    'text-xs font-medium',
-                    trend.isPositive ? 'text-green-600' : 'text-red-600'
+                    'text-xs font-semibold px-2 py-0.5 rounded-full',
+                    trend.isPositive
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                      : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
                   )}
                 >
-                  {trend.isPositive ? '+' : ''}
-                  {trend.value}%
+                  {trend.isPositive ? '↑' : '↓'} {Math.abs(trend.value).toFixed(1)}%
                 </span>
-                <span className="text-xs text-muted-foreground">from last month</span>
               </div>
             )}
           </div>
-          <div className={cn('p-3 rounded-full ml-4', getIconBgColor())}>
-            <Icon className={cn('h-6 w-6', iconClassName)} />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

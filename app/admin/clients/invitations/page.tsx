@@ -225,7 +225,6 @@ export default function InvitationsPage() {
             description="All time invitations"
             icon={Send}
             iconClassName="text-blue-600"
-            iconBgColor="bg-blue-100"
           />
           <StatCard
             title="Pending"
@@ -233,7 +232,6 @@ export default function InvitationsPage() {
             description={`${stats.in_progress} in progress`}
             icon={Clock}
             iconClassName="text-yellow-600"
-            iconBgColor="bg-yellow-100"
           />
           <StatCard
             title="Completed"
@@ -241,7 +239,6 @@ export default function InvitationsPage() {
             description={`${stats.completion_rate}% completion rate`}
             icon={CheckCircle}
             iconClassName="text-green-600"
-            iconBgColor="bg-green-100"
           />
           <StatCard
             title="Avg Completion Time"
@@ -249,7 +246,6 @@ export default function InvitationsPage() {
             description="Days to complete"
             icon={TrendingUp}
             iconClassName="text-purple-600"
-            iconBgColor="bg-purple-100"
           />
         </div>
 

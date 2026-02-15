@@ -38,10 +38,10 @@ export class ClientWarningService {
 
     // Get checklist for this client
     const checklists = ChecklistService.getAll().filter(
-      (checklist) => checklist.client_id === client.id
+      (checklist) => checklist.family_id === client.id
     );
     const activeChecklist = checklists.find(
-      (checklist) => checklist.status !== "completed"
+      (checklist) => checklist.current_step !== "completed"
     ) || checklists[0];
 
     // 1. Check onboarding status
@@ -71,7 +71,7 @@ export class ClientWarningService {
     // 3. Check checklist items if exists
     if (activeChecklist) {
       const pendingItems = activeChecklist.items.filter(
-        (item) => item.status === "pending" || item.status === "in_progress"
+        (item) => item.status === "pending" || item.status === "required"
       );
       const rejectedItems = activeChecklist.items.filter(
         (item) => item.status === "rejected"
@@ -81,9 +81,9 @@ export class ClientWarningService {
       const kycItems = pendingItems.filter(
         (item) =>
           item.category === "kyc" ||
-          item.title.toLowerCase().includes("kyc") ||
-          item.title.toLowerCase().includes("pan") ||
-          item.title.toLowerCase().includes("aadhaar")
+          item.display_name.toLowerCase().includes("kyc") ||
+          item.display_name.toLowerCase().includes("pan") ||
+          item.display_name.toLowerCase().includes("aadhaar")
       );
 
       if (kycItems.length > 0) {
@@ -101,10 +101,11 @@ export class ClientWarningService {
       // Check for document-related pending items
       const docItems = pendingItems.filter(
         (item) =>
-          item.category === "documentation" ||
-          item.title.toLowerCase().includes("document") ||
-          item.title.toLowerCase().includes("upload") ||
-          item.title.toLowerCase().includes("proof")
+          item.category === "financial" ||
+          item.category === "forms" ||
+          item.display_name.toLowerCase().includes("document") ||
+          item.display_name.toLowerCase().includes("upload") ||
+          item.display_name.toLowerCase().includes("proof")
       );
 
       if (docItems.length > 0) {
@@ -233,7 +234,7 @@ export class ClientWarningService {
     if (checklist.items.length === 0) return 0;
 
     const completedItems = checklist.items.filter(
-      (item) => item.status === "completed"
+      (item) => item.status === "verified"
     ).length;
 
     return Math.round((completedItems / checklist.items.length) * 100);

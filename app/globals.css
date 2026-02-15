@@ -71,6 +71,27 @@
   --gray-700: #474343;
   --gray-800: #282828;
   --gray-900: #171717;
+
+  /* Gradient Definitions for Cards & Backgrounds */
+  --gradient-primary: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+  --gradient-success: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  --gradient-warning: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+  --gradient-danger: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  --gradient-info: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  --gradient-gold: linear-gradient(135deg, #92400e 0%, #d4a853 100%);
+  --gradient-purple: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+
+  /* Glassmorphism Support */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-blur: 12px;
+
+  /* Chart Gradient Fills (for area charts) */
+  --chart-gradient-blue: linear-gradient(180deg, rgba(59, 130, 246, 0.4) 0%, rgba(59, 130, 246, 0.0) 100%);
+  --chart-gradient-green: linear-gradient(180deg, rgba(16, 185, 129, 0.4) 0%, rgba(16, 185, 129, 0.0) 100%);
+  --chart-gradient-purple: linear-gradient(180deg, rgba(139, 92, 246, 0.4) 0%, rgba(139, 92, 246, 0.0) 100%);
+  --chart-gradient-gold: linear-gradient(180deg, rgba(212, 168, 83, 0.4) 0%, rgba(212, 168, 83, 0.0) 100%);
+  --chart-gradient-red: linear-gradient(180deg, rgba(239, 68, 68, 0.4) 0%, rgba(239, 68, 68, 0.0) 100%);
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -169,6 +190,11 @@
   --gray-700: #d4d4d4;
   --gray-800: #e5e5e5;
   --gray-900: #fafafa;
+
+  /* Glassmorphism Support - Dark Mode */
+  --glass-bg: rgba(23, 23, 23, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 12px;
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -257,4 +283,126 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Enhanced Typography Hierarchy */
+  h1 {
+    @apply text-3xl md:text-4xl font-bold tracking-tight;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl font-semibold tracking-tight;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl font-semibold;
+  }
+
+  /* Metric Display Typography */
+  .metric-value {
+    @apply text-3xl md:text-4xl font-bold tabular-nums;
+  }
+
+  .metric-label {
+    @apply text-sm font-medium tracking-wide uppercase text-muted-foreground;
+  }
+
+  .metric-description {
+    @apply text-xs text-muted-foreground;
+  }
+}
+
+/* Glassmorphism & Visual Effects */
+.card-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+.gradient-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 150px;
+  background: var(--gradient-primary);
+  opacity: 0.05;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Card Enhancement Classes */
+.card-elevated {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.card-elevated:hover {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  transform: translateY(-2px);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Chart Container Styles */
+.chart-container {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+}
+
+@media (min-width: 768px) {
+  .chart-container {
+    min-height: 350px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .chart-container {
+    min-height: 400px;
+  }
+}
+
+/* Shimmer Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  background-size: 1000px 100%;
+}
+
+.dark .shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0)
+  );
 }

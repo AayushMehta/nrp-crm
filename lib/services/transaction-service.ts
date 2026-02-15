@@ -179,4 +179,49 @@ export class TransactionService {
     const transactions = this.getTransactionsByFamily(familyId);
     return transactions.filter(t => t.status === 'pending').length;
   }
+
+  /**
+   * Get cashflow analysis data for charts (monthly grouped)
+   * Returns invested, withdrawn, and net cashflow per month
+   */
+  static getCashflowAnalysis(familyId: string, months: number = 6): Array<{
+    month: string;
+    invested: number;
+    withdrawn: number;
+    net: number;
+  }> {
+    const transactions = this.getTransactionsByFamily(familyId).filter(t => t.status === 'completed');
+    const data: Record<string, { invested: number; withdrawn: number }> = {};
+    const now = new Date();
+
+    // Initialize months
+    for (let i = months - 1; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthKey = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      data[monthKey] = { invested: 0, withdrawn: 0 };
+    }
+
+    // Group transactions by month
+    transactions.forEach(txn => {
+      const date = new Date(txn.date);
+      const monthKey = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+      if (data[monthKey]) {
+        const isInflow = ['buy', 'deposit', 'dividend', 'interest'].includes(txn.type);
+        if (isInflow) {
+          data[monthKey].invested += txn.amount;
+        } else {
+          data[monthKey].withdrawn += txn.amount;
+        }
+      }
+    });
+
+    // Convert to array with net calculation
+    return Object.entries(data).map(([month, values]) => ({
+      month,
+      invested: Math.round(values.invested),
+      withdrawn: Math.round(values.withdrawn),
+      net: Math.round(values.invested - values.withdrawn),
+    }));
+  }
 }

@@ -24,7 +24,6 @@ import { PortfolioService } from "@/lib/services/portfolio-service";
 import { TransactionService } from "@/lib/services/transaction-service";
 import { MeetingService } from "@/lib/services/meeting-service";
 import { DocumentService } from "@/lib/services/document-service";
-import { AssetAllocationChart } from "@/components/charts/AssetAllocationChart";
 import { HoldingsTable } from "@/components/wealth/HoldingsTable";
 import { TransactionTable } from "@/components/wealth/TransactionTable";
 import { QuickActionsWidget } from "@/components/dashboard/QuickActionsWidget";
@@ -33,6 +32,13 @@ import { RecentDocumentsWidget } from "@/components/dashboard/RecentDocumentsWid
 import { DocumentUploadDialog } from "@/components/documents/DocumentUploadDialog";
 import { useToast } from "@/hooks/use-toast";
 import { UserFlowSection } from "@/components/ui/user-flow-section";
+import { BaseAreaChart } from "@/components/charts/BaseAreaChart";
+import { BasePieChart } from "@/components/charts/BasePieChart";
+import { BaseBarChart } from "@/components/charts/BaseBarChart";
+import { BaseComposedChart } from "@/components/charts/BaseComposedChart";
+import { CHART_COLORS } from "@/lib/chart-colors";
+import { motion } from "framer-motion";
+import { cardStaggerVariants, pageVariants } from "@/lib/animation-utils";
 
 export default function ClientDashboard() {
   const { user, family } = useAuth();
@@ -53,6 +59,21 @@ export default function ClientDashboard() {
       recentTransactions: completedTxns,
     };
   }, [family]);
+
+  // Chart data for client dashboard
+  const chartData = useMemo(() => {
+    if (!family?.id || !portfolioData?.portfolio) return null;
+
+    return {
+      historicalValues: PortfolioService.getHistoricalValues(family.id, 12),
+      topHoldings: PortfolioService.getTopHoldings(family.id, 5),
+      cashflowAnalysis: TransactionService.getCashflowAnalysis(family.id, 6),
+      assetAllocation: portfolioData.portfolio.asset_allocation.map(a => ({
+        name: a.asset_class.charAt(0).toUpperCase() + a.asset_class.slice(1).replace('_', ' '),
+        value: a.value,
+      })),
+    };
+  }, [family, portfolioData]);
 
   // Load upcoming meetings
   const upcomingMeetings = useMemo(() => {
@@ -133,14 +154,24 @@ export default function ClientDashboard() {
 
   return (
     <AppLayout>
-      <div className="p-6 space-y-6">
+      <motion.div
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="p-6 space-y-6"
+      >
         {/* Page Header */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
           <h1 className="text-3xl font-bold tracking-tight">Welcome back, {user?.name}!</h1>
           <p className="text-muted-foreground">
             {family?.name || "Client Portal"} - Your portfolio overview
           </p>
-        </div>
+        </motion.div>
 
         {/* Portfolio Stats Grid */}
         <div className="grid gap-6 md:grid-cols-4">
@@ -194,26 +225,78 @@ export default function ClientDashboard() {
 
           {/* Portfolio Tab */}
           <TabsContent value="portfolio" className="space-y-6">
-            {portfolioData?.portfolio ? (
-              <div className="grid gap-6 lg:grid-cols-3">
-                {/* Asset Allocation - 1 column */}
-                <div>
-                  <AssetAllocationChart
-                    allocations={portfolioData.portfolio.asset_allocation}
+            {portfolioData?.portfolio && chartData ? (
+              <>
+                {/* First Row: Portfolio Trend and Asset Allocation */}
+                <div className="grid gap-6 lg:grid-cols-3">
+                  {/* Portfolio Value Trend - 2 columns */}
+                  <div className="lg:col-span-2">
+                    <BaseAreaChart
+                      data={chartData.historicalValues.map(item => ({
+                        name: item.month,
+                        value: item.current,
+                        secondaryValue: item.invested,
+                      }))}
+                      title="Portfolio Value Trend"
+                      description="12-month growth: invested vs current value"
+                      dataKey="value"
+                      secondaryDataKey="secondaryValue"
+                      xAxisKey="name"
+                      color={CHART_COLORS.performance.positive}
+                      secondaryColor={CHART_COLORS.performance.neutral}
+                      gradientId="portfolioValueGradient"
+                      secondaryGradientId="portfolioInvestedGradient"
+                      formatType="currency"
+                      height={350}
+                    />
+                  </div>
+
+                  {/* Asset Allocation Pie - 1 column */}
+                  <BasePieChart
+                    data={chartData.assetAllocation}
                     title="Asset Allocation"
-                    description="Your portfolio distribution"
+                    description="Portfolio distribution"
+                    colors={[
+                      CHART_COLORS.assets.equity,
+                      CHART_COLORS.assets.debt,
+                      CHART_COLORS.assets.mutual_fund,
+                      CHART_COLORS.assets.gold,
+                      CHART_COLORS.assets.real_estate,
+                      CHART_COLORS.assets.cash,
+                      CHART_COLORS.assets.alternative,
+                    ]}
+                    formatType="currency"
+                    showLegend={true}
+                    height={350}
                   />
                 </div>
 
-                {/* Holdings Table - 2 columns */}
-                <div className="lg:col-span-2">
-                  <HoldingsTable
-                    holdings={portfolioData.portfolio.holdings}
-                    title="Your Holdings"
-                    description="All securities in your portfolio"
+                {/* Second Row: Top Holdings Performance */}
+                <div className="grid gap-6 md:grid-cols-1">
+                  <BaseBarChart
+                    data={chartData.topHoldings.map(h => ({
+                      name: h.name,
+                      value: h.gainPercent,
+                      color: h.gainPercent > 0 ? CHART_COLORS.performance.positive : CHART_COLORS.performance.negative,
+                    }))}
+                    title="Top Holdings Performance"
+                    description="Best performing securities (1-year returns)"
+                    dataKey="value"
+                    xAxisKey="name"
+                    formatType="number"
+                    layout="horizontal"
+                    height={280}
+                    showValues
                   />
                 </div>
-              </div>
+
+                {/* Third Row: Holdings Table */}
+                <HoldingsTable
+                  holdings={portfolioData.portfolio.holdings}
+                  title="Your Holdings"
+                  description="All securities in your portfolio"
+                />
+              </>
             ) : (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12">
@@ -228,14 +311,38 @@ export default function ClientDashboard() {
           </TabsContent>
 
           {/* Transactions Tab */}
-          <TabsContent value="transactions">
-            {portfolioData?.recentTransactions && portfolioData.recentTransactions.length > 0 ? (
-              <TransactionTable
-                transactions={portfolioData.recentTransactions}
-                title="Transaction History"
-                description="Your recent portfolio transactions"
-                showFilter={true}
-              />
+          <TabsContent value="transactions" className="space-y-6">
+            {portfolioData?.recentTransactions && portfolioData.recentTransactions.length > 0 && chartData ? (
+              <>
+                {/* Cashflow Analysis Chart */}
+                <BaseComposedChart
+                  data={chartData.cashflowAnalysis.map(item => ({
+                    name: item.month,
+                    barValue1: item.invested,
+                    barValue2: item.withdrawn,
+                    lineValue: item.net,
+                  }))}
+                  title="Cashflow Analysis"
+                  description="6-month investment activity"
+                  barDataKey1="barValue1"
+                  barDataKey2="barValue2"
+                  lineDataKey="lineValue"
+                  xAxisKey="name"
+                  barColor1={CHART_COLORS.performance.positive}
+                  barColor2={CHART_COLORS.performance.negative}
+                  lineColor={CHART_COLORS.performance.benchmark}
+                  formatType="currency"
+                  height={350}
+                />
+
+                {/* Transaction Table */}
+                <TransactionTable
+                  transactions={portfolioData.recentTransactions}
+                  title="Transaction History"
+                  description="Your recent portfolio transactions"
+                  showFilter={true}
+                />
+              </>
             ) : (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12">
@@ -359,7 +466,7 @@ export default function ClientDashboard() {
             ]
           }}
         />
-      </div>
+      </motion.div>
     </AppLayout>
   );
 }

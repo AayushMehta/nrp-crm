@@ -152,4 +152,55 @@ export class PortfolioService {
 
     return updated;
   }
+
+  /**
+   * Get historical portfolio values (mock data for charts)
+   * In production, would query actual snapshots from database
+   */
+  static getHistoricalValues(familyId: string, months: number = 12): Array<{ month: string; invested: number; current: number }> {
+    const portfolio = this.getPortfolioByFamily(familyId);
+    if (!portfolio) return [];
+
+    const currentValue = portfolio.total_value;
+    const investedValue = portfolio.total_invested;
+    const data = [];
+    const now = new Date();
+
+    // Generate historical data with realistic growth trend
+    for (let i = months - 1; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthName = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+      // Simulate historical values with growth trend + volatility
+      const growthFactor = (months - i) / months;
+      const volatility = (Math.random() - 0.5) * 0.08; // ±4% variation
+
+      const historicalCurrent = currentValue * (0.75 + 0.25 * growthFactor + volatility);
+      const historicalInvested = investedValue * (0.9 + 0.1 * growthFactor); // Gradual increase in invested capital
+
+      data.push({
+        month: monthName,
+        invested: Math.round(historicalInvested),
+        current: Math.round(historicalCurrent),
+      });
+    }
+
+    return data;
+  }
+
+  /**
+   * Get top performing holdings for charts
+   */
+  static getTopHoldings(familyId: string, limit: number = 5): Array<{ name: string; gainPercent: number }> {
+    const portfolio = this.getPortfolioByFamily(familyId);
+    if (!portfolio) return [];
+
+    return portfolio.holdings
+      .map(h => ({
+        name: h.security_name.length > 20 ? h.security_name.substring(0, 20) + '...' : h.security_name,
+        gainPercent: h.invested_value > 0 ? ((h.current_value - h.invested_value) / h.invested_value) * 100 : 0,
+      }))
+      .sort((a, b) => b.gainPercent - a.gainPercent)
+      .slice(0, limit);
+  }
 }

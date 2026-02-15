@@ -224,6 +224,95 @@ export class WealthMetricsService {
   }
 
   /**
+   * Get historical AUM snapshots (mock data for charts)
+   * In production, this would query actual monthly snapshots from database
+   */
+  static getHistoricalAUM(months: number = 12, familyIds?: string[]): Array<{ month: string; value: number }> {
+    const currentMetrics = familyIds
+      ? this.calculateRMAUM('', familyIds)
+      : this.calculateSystemAUM();
+
+    const currentAUM = currentMetrics.total_aum;
+    const data = [];
+    const now = new Date();
+
+    // Generate historical data with realistic growth trend
+    for (let i = months - 1; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthName = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+      // Simulate historical values with growth trend + some volatility
+      const growthFactor = (months - i) / months; // Linear growth from past to present
+      const volatility = (Math.random() - 0.5) * 0.1; // ±5% random variation
+      const historicalValue = currentAUM * (0.8 + 0.2 * growthFactor + volatility);
+
+      data.push({
+        month: monthName,
+        value: Math.round(historicalValue),
+      });
+    }
+
+    return data;
+  }
+
+  /**
+   * Get AUM distribution by tier for charts
+   */
+  static getAUMByTierForChart(): Array<{ name: string; value: number; tier: ClientTier }> {
+    const metrics = this.calculateSystemAUM();
+
+    return [
+      { name: 'Tier 1 (>₹5Cr)', value: metrics.aum_by_tier.tier_1, tier: 'tier_1' as ClientTier },
+      { name: 'Tier 2 (₹2-5Cr)', value: metrics.aum_by_tier.tier_2, tier: 'tier_2' as ClientTier },
+      { name: 'Tier 3 (<₹2Cr)', value: metrics.aum_by_tier.tier_3, tier: 'tier_3' as ClientTier },
+      { name: 'Prospects', value: metrics.aum_by_tier.prospect, tier: 'prospect' as ClientTier },
+    ].filter(item => item.value > 0); // Only show tiers with AUM
+  }
+
+  /**
+   * Get revenue breakdown by service type for charts
+   */
+  static getRevenueByServiceForChart(): Array<{ name: string; value: number; percentage: number }> {
+    const revenue = this.calculateRevenueMetrics();
+    const total = revenue.total_fees;
+
+    return [
+      {
+        name: 'NRP 360',
+        value: revenue.fees_by_service.nrp_360,
+        percentage: (revenue.fees_by_service.nrp_360 / total) * 100,
+      },
+      {
+        name: 'NRP Light',
+        value: revenue.fees_by_service.nrp_light,
+        percentage: (revenue.fees_by_service.nrp_light / total) * 100,
+      },
+    ];
+  }
+
+  /**
+   * Get client status summary for dashboard widgets
+   */
+  static getClientStatusSummary(familyIds?: string[]): {
+    onboarding_pending: number;
+    compliance_overdue: number;
+    meetings_this_month: number;
+    documents_pending: number;
+  } {
+    const assessments = familyIds
+      ? this.getAllRiskAssessments().filter(a => familyIds.includes(a.family_id))
+      : this.getAllRiskAssessments();
+
+    // Mock values - in production, integrate with actual services
+    return {
+      onboarding_pending: 3,
+      compliance_overdue: assessments.filter(a => a.is_overdue).length,
+      meetings_this_month: 12,
+      documents_pending: 5,
+    };
+  }
+
+  /**
    * Determine review status from risk assessment
    */
   private static getReviewStatus(risk: RiskAssessment | undefined): 'current' | 'due_soon' | 'overdue' {

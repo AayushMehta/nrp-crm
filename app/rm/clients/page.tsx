@@ -122,7 +122,6 @@ export default function RMClientsPage() {
               description="Assigned to you"
               icon={Users}
               iconClassName="text-blue-600"
-              iconBgColor="bg-blue-100"
             />
             <StatCard
               title="Active Clients"
@@ -130,7 +129,6 @@ export default function RMClientsPage() {
               description={`${stats.by_status.onboarding} onboarding`}
               icon={CheckCircle}
               iconClassName="text-green-600"
-              iconBgColor="bg-green-100"
             />
             <StatCard
               title="Total AUM"
@@ -138,7 +136,6 @@ export default function RMClientsPage() {
               description={`Avg: ${formatCurrency(stats.average_aum)}`}
               icon={TrendingUp}
               iconClassName="text-purple-600"
-              iconBgColor="bg-purple-100"
             />
             <StatCard
               title="Prospects"
@@ -146,7 +143,6 @@ export default function RMClientsPage() {
               description="Potential clients"
               icon={AlertCircle}
               iconClassName="text-orange-600"
-              iconBgColor="bg-orange-100"
             />
           </div>
         )}

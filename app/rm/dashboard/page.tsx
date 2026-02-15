@@ -44,6 +44,12 @@ import { ClientWealthCard } from "@/components/wealth/ClientWealthCard";
 import { CalendarEvent, EventType } from "@/types/calendar";
 import { cn } from "@/lib/utils";
 import { UserFlowSection } from "@/components/ui/user-flow-section";
+import { BaseAreaChart } from "@/components/charts/BaseAreaChart";
+import { BaseBarChart } from "@/components/charts/BaseBarChart";
+import { BaseRadialBarChart } from "@/components/charts/BaseRadialBarChart";
+import { CHART_COLORS } from "@/lib/chart-colors";
+import { motion } from "framer-motion";
+import { cardStaggerVariants, pageVariants } from "@/lib/animation-utils";
 
 const STORAGE_KEY = 'nrp_crm_calendar_events';
 
@@ -186,19 +192,75 @@ export default function RMDashboard() {
       reviews_due: reviewsDue,
       revenue_this_month: revenueMetrics.total_fees,
       client_summaries: clientSummaries,
+      familyIds,
     };
   }, [user]);
 
+  // Chart data for RM dashboard
+  const chartData = useMemo(() => {
+    const familyIds = wealthStats.familyIds;
+    const portfolios = PortfolioService.getAllPortfolios().filter(p => familyIds.includes(p.family_id));
+    const riskAssessments = WealthMetricsService.getAllRiskAssessments().filter(r => familyIds.includes(r.family_id));
+
+    // Client performance comparison
+    const clientPerformance = portfolios.map(p => ({
+      name: p.family_name.split(' ')[0], // Use first name only for compact display
+      value: p.total_gain_percent,
+    }));
+
+    // Asset allocation aggregate
+    const assetAllocation: Record<string, number> = {};
+    portfolios.forEach(p => {
+      p.asset_allocation.forEach(asset => {
+        assetAllocation[asset.asset_class] = (assetAllocation[asset.asset_class] || 0) + asset.value;
+      });
+    });
+
+    const assetAllocationData = Object.entries(assetAllocation).map(([name, value]) => ({
+      name: name.charAt(0).toUpperCase() + name.slice(1).replace('_', ' '),
+      value,
+    }));
+
+    // Risk profile distribution
+    const riskDistribution: Record<string, number> = {};
+    riskAssessments.forEach(r => {
+      riskDistribution[r.risk_profile] = (riskDistribution[r.risk_profile] || 0) + 1;
+    });
+
+    const riskDistributionData = Object.entries(riskDistribution).map(([name, count]) => ({
+      name: name.charAt(0).toUpperCase() + name.slice(1).replace('_', ' '),
+      value: count,
+      percentage: (count / riskAssessments.length) * 100,
+    }));
+
+    return {
+      historicalAUM: WealthMetricsService.getHistoricalAUM(6, familyIds),
+      clientPerformance,
+      assetAllocation: assetAllocationData,
+      riskDistribution: riskDistributionData,
+    };
+  }, [wealthStats]);
+
   return (
     <AppLayout>
-      <div className="p-6 space-y-6">
+      <motion.div
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="p-6 space-y-6"
+      >
         {/* Page Header */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
           <h1 className="text-3xl font-bold tracking-tight">Welcome back, {user?.name}!</h1>
           <p className="text-muted-foreground">
             Your wealth management dashboard
           </p>
-        </div>
+        </motion.div>
 
         {/* Wealth Stats Grid */}
         <div className="grid gap-6 md:grid-cols-4">
@@ -245,32 +307,106 @@ export default function RMDashboard() {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold mb-4">My Clients</h2>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {wealthStats.client_summaries.map((client) => (
-                  <ClientWealthCard
-                    key={client.family_id}
-                    client={client}
-                    onViewDetails={(clientId) => {
-                      console.log('View details for:', clientId);
-                      // TODO: Navigate to client detail page
-                    }}
-                  />
-                ))}
-              </div>
-
-              {wealthStats.client_summaries.length === 0 && (
-                <Card>
-                  <CardContent className="flex flex-col items-center justify-center py-12">
-                    <Users className="h-12 w-12 text-gray-400 mb-4" />
-                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">No clients assigned</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                      Clients will appear here once they're assigned to you
+            {/* Alert Banner for Overdue Reviews */}
+            {wealthStats.reviews_due > 0 && (
+              <div className="rounded-lg border-l-4 border-orange-500 bg-orange-50 dark:bg-orange-950/20 p-4">
+                <div className="flex items-center gap-3">
+                  <AlertCircle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-orange-900 dark:text-orange-100">
+                      {wealthStats.reviews_due} Client Review{wealthStats.reviews_due > 1 ? 's' : ''} Due
                     </p>
-                  </CardContent>
-                </Card>
-              )}
+                    <p className="text-xs text-orange-700 dark:text-orange-300 mt-1">
+                      Risk assessments require your attention
+                    </p>
+                  </div>
+                  <Button size="sm" variant="outline" className="border-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/30">
+                    Review Clients
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Charts Grid */}
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* My AUM Trend */}
+              <BaseAreaChart
+                data={chartData.historicalAUM.map(item => ({
+                  name: item.month,
+                  value: item.value,
+                }))}
+                title="My AUM Trend"
+                description="6-month portfolio value history"
+                dataKey="value"
+                xAxisKey="name"
+                color={CHART_COLORS.tiers.tier_3}
+                gradientId="rmAUMGradient"
+                formatType="currency"
+                height={350}
+              />
+
+              {/* Risk Profile Distribution */}
+              <BaseRadialBarChart
+                data={chartData.riskDistribution.map(item => ({
+                  name: item.name,
+                  value: item.percentage,
+                }))}
+                title="Risk Profile Distribution"
+                description="Client risk appetite breakdown"
+                colors={[
+                  CHART_COLORS.risk.conservative,
+                  CHART_COLORS.risk.moderate,
+                  CHART_COLORS.risk.balanced,
+                  CHART_COLORS.risk.growth,
+                  CHART_COLORS.risk.aggressive,
+                ]}
+                formatType="percentage"
+                height={350}
+              />
+            </div>
+
+            {/* Second Row */}
+            <div className="grid gap-6 md:grid-cols-1">
+              {/* Client Performance Comparison */}
+              <BaseBarChart
+                data={chartData.clientPerformance.map(c => ({
+                  ...c,
+                  color: c.value > 0 ? CHART_COLORS.performance.positive : CHART_COLORS.performance.negative,
+                }))}
+                title="Client Performance Comparison"
+                description="1-year returns by client"
+                dataKey="value"
+                xAxisKey="name"
+                formatType="number"
+                layout="horizontal"
+                height={280}
+                showValues
+              />
+            </div>
+
+            {/* Asset Allocation Aggregate */}
+            <div className="grid gap-6 md:grid-cols-1">
+              <BaseBarChart
+                data={chartData.assetAllocation.map((item, index) => ({
+                  ...item,
+                  color: [
+                    CHART_COLORS.assets.equity,
+                    CHART_COLORS.assets.debt,
+                    CHART_COLORS.assets.mutual_fund,
+                    CHART_COLORS.assets.gold,
+                    CHART_COLORS.assets.real_estate,
+                    CHART_COLORS.assets.cash,
+                    CHART_COLORS.assets.alternative,
+                  ][index % 7],
+                }))}
+                title="Aggregate Asset Allocation"
+                description="Combined portfolio composition across all clients"
+                dataKey="value"
+                xAxisKey="name"
+                formatType="currency"
+                layout="horizontal"
+                height={280}
+              />
             </div>
           </TabsContent>
 
@@ -541,7 +677,7 @@ export default function RMDashboard() {
             ]
           }}
         />
-      </div>
+      </motion.div>
     </AppLayout>
   );
 }
