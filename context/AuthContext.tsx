@@ -17,6 +17,7 @@ import {
   initializeSampleUsers,
 } from "@/data/mock/sample-users";
 import { mockAuth } from "@/lib/auth/mockAuth";
+import { seedDemoData } from "@/lib/services/seed-data";
 
 interface AuthContextType {
   user: User | null;
@@ -42,6 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         // Initialize sample users if needed
         initializeSampleUsers();
+        seedDemoData();
 
         // Check if there's an existing session
         const currentUser = await mockAuth.getCurrentUser();
@@ -109,6 +111,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Clear auth state
     setUser(null);
     setFamily(null);
+
+    // Hard redirect to login page
+    window.location.href = '/auth/login';
   }, []);
 
   const refreshUser = useCallback(async () => {

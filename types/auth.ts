@@ -1,7 +1,7 @@
 // types/auth.ts
 // Authentication and user management types for NRP CRM
 
-export type UserRole = "admin" | "rm" | "family";
+export type UserRole = "admin" | "rm" | "family" | "back_office";
 
 export interface User {
   id: string;

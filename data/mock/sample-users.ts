@@ -40,6 +40,24 @@ export const SAMPLE_USERS: UserPersona[] = [
     description: "Relationship Manager handling client accounts",
   },
 
+  // Back Office User
+  {
+    user: {
+      id: "bo-1",
+      email: "backoffice@nrpcrm.com",
+      username: "backoffice",
+      name: "Back Office",
+      role: "back_office",
+      createdAt: new Date("2024-01-01"),
+      updatedAt: new Date(),
+    },
+    credentials: {
+      username: "backoffice",
+      password: "bo123",
+    },
+    description: "Back Office staff handling assigned tasks and clients",
+  },
+
   // Family User 1
   {
     user: {

@@ -23,6 +23,25 @@ export function formatCurrency(
 }
 
 /**
+ * Format a number in Indian notation with CR / L / K suffix
+ * Examples: ₹15.5 CR, ₹2.3 L, ₹85 K, ₹999
+ */
+export function formatIndianCurrency(value: number, decimals = 1): string {
+  const abs = Math.abs(value);
+  const sign = value < 0 ? '-' : '';
+
+  if (abs >= 10000000) {
+    return `${sign}₹${(abs / 10000000).toFixed(decimals)} CR`;
+  } else if (abs >= 100000) {
+    return `${sign}₹${(abs / 100000).toFixed(decimals)} L`;
+  } else if (abs >= 1000) {
+    return `${sign}₹${(abs / 1000).toFixed(decimals)} K`;
+  } else {
+    return `${sign}₹${abs.toLocaleString('en-IN')}`;
+  }
+}
+
+/**
  * Format a date string
  */
 export function formatDate(date: string | Date, format: "short" | "long" = "short"): string {

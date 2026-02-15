@@ -20,44 +20,45 @@ import { useAuth } from '@/context/AuthContext';
 
 // Admin CRM Navigation
 const adminNavigation = [
-  { name: 'CRM Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-  { name: 'Task Board', href: '/tasks', icon: CheckSquare },
-  { name: 'Messages', href: '/communications', icon: MessageSquare },
-  { name: 'Onboarding', href: '/admin/onboarding', icon: ClipboardList },
-  { name: 'Meeting Notes', href: '/admin/meeting-notes', icon: MessageSquare },
+  { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
   { name: 'Clients', href: '/admin/clients', icon: Users },
+  { name: 'Onboarding', href: '/admin/onboarding', icon: CheckSquare },
+  { name: 'Onboard Client', href: '/admin/onboarding/invite', icon: ClipboardList },
   { name: 'Reminders', href: '/admin/reminders', icon: Bell },
-  { name: 'Email Templates', href: '/admin/communications', icon: Mail },
-  { name: 'Documents', href: '/admin/documents', icon: FileText },
 ];
 
 // RM Navigation
 const rmNavigation = [
   { name: 'Dashboard', href: '/rm/dashboard', icon: LayoutDashboard },
-  { name: 'Tasks', href: '/tasks', icon: CheckSquare },
-  { name: 'Messages', href: '/communications', icon: MessageSquare },
-  { name: 'Calendar', href: '/rm/calendar', icon: Calendar },
   { name: 'My Clients', href: '/rm/clients', icon: Users },
+  { name: 'Onboard Client', href: '/rm/onboarding', icon: ClipboardList },
   { name: 'Reminders', href: '/rm/reminders', icon: Bell },
 ];
 
 // Client Navigation
 const clientNavigation = [
   { name: 'Dashboard', href: '/client/dashboard', icon: LayoutDashboard },
-  { name: 'Messages', href: '/communications', icon: MessageSquare },
-  { name: 'My Meetings', href: '/client/meetings', icon: Calendar },
-  { name: 'Documents', href: '/client/documents', icon: FileText },
+];
+
+// Back Office Navigation
+const backOfficeNavigation = [
+  { name: 'Dashboard', href: '/back-office/dashboard', icon: LayoutDashboard },
+  { name: 'Assigned Tasks', href: '/back-office/tasks', icon: CheckSquare },
+  { name: 'Reminders', href: '/back-office/reminders', icon: Bell },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
 
-  const navigation = user?.role === 'admin'
-    ? adminNavigation
-    : user?.role === 'rm'
-    ? rmNavigation
-    : clientNavigation;
+  const navigation = (() => {
+    switch (user?.role) {
+      case 'admin': return adminNavigation;
+      case 'rm': return rmNavigation;
+      case 'back_office': return backOfficeNavigation;
+      default: return clientNavigation;
+    }
+  })();
 
   const handleLogout = async () => {
     await logout();
@@ -72,6 +73,8 @@ export function Sidebar() {
         return 'from-purple-500 to-blue-600';
       case 'family':
         return 'from-blue-500 to-purple-600';
+      case 'back_office':
+        return 'from-teal-500 to-cyan-600';
       default:
         return 'from-gray-500 to-gray-600';
     }

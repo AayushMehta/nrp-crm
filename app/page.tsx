@@ -25,6 +25,9 @@ export default function Home() {
           case "family":
             router.push("/client/dashboard");
             break;
+          case "back_office":
+            router.push("/back-office/dashboard");
+            break;
         }
       }
     }

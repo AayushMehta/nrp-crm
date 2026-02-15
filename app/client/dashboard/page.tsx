@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { formatIndianCurrency } from "@/lib/utils";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,6 +20,9 @@ import {
   BarChart3,
   Activity,
   FileText,
+  Users,
+  UserCheck,
+  ShieldCheck,
 } from "lucide-react";
 import { PortfolioService } from "@/lib/services/portfolio-service";
 import { TransactionService } from "@/lib/services/transaction-service";
@@ -177,14 +181,14 @@ export default function ClientDashboard() {
         <div className="grid gap-6 md:grid-cols-4">
           <StatCard
             title="Portfolio Value"
-            value={`₹${(stats.portfolio_value / 100000).toFixed(2)}L`}
+            value={formatIndianCurrency(stats.portfolio_value)}
             description={`${stats.holdings_count} holdings`}
             icon={Wallet}
             iconClassName="text-blue-600"
           />
           <StatCard
             title="Total Returns"
-            value={`₹${(stats.total_gain / 100000).toFixed(2)}L`}
+            value={formatIndianCurrency(stats.total_gain)}
             description={`${stats.total_gain_percent >= 0 ? '+' : ''}${stats.total_gain_percent.toFixed(1)}%`}
             icon={TrendingUp}
             iconClassName={stats.total_gain >= 0 ? "text-green-600" : "text-red-600"}
@@ -218,6 +222,7 @@ export default function ClientDashboard() {
           <TabsList>
             <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
             <TabsTrigger value="transactions">Transactions</TabsTrigger>
+            <TabsTrigger value="family">Family</TabsTrigger>
             {!onboardingComplete && (
               <TabsTrigger value="onboarding">Onboarding</TabsTrigger>
             )}
@@ -387,6 +392,97 @@ export default function ClientDashboard() {
               </Card>
             </TabsContent>
           )}
+          {/* Family Tab */}
+          <TabsContent value="family" className="space-y-6">
+            {family ? (
+              <div className="grid gap-6 md:grid-cols-2">
+                {/* Family Overview */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5 text-blue-600" />
+                      Family Details
+                    </CardTitle>
+                    <CardDescription>{family.name}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-3 bg-muted/50 rounded-lg">
+                        <p className="text-xs text-muted-foreground">Service Type</p>
+                        <p className="text-sm font-semibold mt-0.5">
+                          {family.service_type === 'nrp_360' ? 'NRP 360°' : family.service_type === 'nrp_light' ? 'NRP Light' : '—'}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-muted/50 rounded-lg">
+                        <p className="text-xs text-muted-foreground">Client Tier</p>
+                        <p className="text-sm font-semibold mt-0.5 capitalize">
+                          {family.tier?.replace('_', ' ') || '—'}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-muted/50 rounded-lg">
+                        <p className="text-xs text-muted-foreground">Risk Profile</p>
+                        <p className="text-sm font-semibold mt-0.5 capitalize flex items-center gap-1.5">
+                          <ShieldCheck className="h-3.5 w-3.5 text-green-600" />
+                          {family.risk_profile || '—'}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-muted/50 rounded-lg">
+                        <p className="text-xs text-muted-foreground">Onboarded</p>
+                        <p className="text-sm font-semibold mt-0.5">
+                          {family.onboarding_completed_date
+                            ? new Date(family.onboarding_completed_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+                            : 'In Progress'}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Family Members */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <UserCheck className="h-5 w-5 text-purple-600" />
+                      Family Members
+                    </CardTitle>
+                    <CardDescription>{family.members.length} member{family.members.length !== 1 ? 's' : ''}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {family.members.map((member) => (
+                        <div key={member.id} className="flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/30 transition-colors">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-violet-500 text-white text-xs font-bold">
+                            {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium flex items-center gap-2">
+                              {member.name}
+                              {member.id === family.primaryContactId && (
+                                <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-medium">
+                                  Primary
+                                </span>
+                              )}
+                            </p>
+                            <p className="text-xs text-muted-foreground capitalize">
+                              {member.relationship}
+                              {member.email && ` · ${member.email}`}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Users className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-muted-foreground">No family details available</p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
         </Tabs>
 
         {/* Bottom Widgets: Upcoming Meetings & Recent Documents */}

@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { formatIndianCurrency } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -36,6 +38,7 @@ import { motion } from "framer-motion";
 import { cardStaggerVariants, pageVariants } from "@/lib/animation-utils";
 
 export default function AdminDashboardPage() {
+  const router = useRouter();
   const [stats, setStats] = useState({
     onboarding: { total: 0, pending_verification: 0, completed: 0 },
     meetings: { total: 0, this_month: 0, pending_actions: 0 },
@@ -124,7 +127,7 @@ export default function AdminDashboardPage() {
         <div className="grid gap-6 md:grid-cols-4">
           <StatCard
             title="Total System AUM"
-            value={`₹${(wealthStats.total_aum / 10000000).toFixed(1)}Cr`}
+            value={formatIndianCurrency(wealthStats.total_aum)}
             description={`${wealthStats.aum_change_percent > 0 ? '+' : ''}${wealthStats.aum_change_percent.toFixed(1)}% MoM`}
             icon={TrendingUp}
             iconClassName="text-blue-600"
@@ -149,7 +152,7 @@ export default function AdminDashboardPage() {
 
           <StatCard
             title="System Revenue"
-            value={`₹${(wealthStats.system_revenue / 100000).toFixed(1)}L`}
+            value={formatIndianCurrency(wealthStats.system_revenue)}
             description="This month"
             icon={IndianRupee}
             iconClassName="text-green-600"
@@ -180,7 +183,7 @@ export default function AdminDashboardPage() {
                       Risk assessments require immediate attention
                     </p>
                   </div>
-                  <Button size="sm" variant="outline" className="border-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/30">
+                  <Button size="sm" variant="outline" className="border-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/30" onClick={() => router.push('/admin/onboarding')}>
                     Review Now
                   </Button>
                 </div>
@@ -315,19 +318,19 @@ export default function AdminDashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid gap-3 md:grid-cols-4">
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button className="w-full justify-start" variant="outline" onClick={() => router.push('/admin/onboarding/invite')}>
                     <Users className="mr-2 h-4 w-4" />
                     Create Client
                   </Button>
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button className="w-full justify-start" variant="outline" onClick={() => { import('sonner').then(m => m.toast.info('Meeting scheduling coming soon')); }}>
                     <Calendar className="mr-2 h-4 w-4" />
                     Schedule Meeting
                   </Button>
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button className="w-full justify-start" variant="outline" onClick={() => { import('sonner').then(m => m.toast.info('Document upload coming soon')); }}>
                     <FileText className="mr-2 h-4 w-4" />
                     Upload Document
                   </Button>
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button className="w-full justify-start" variant="outline" onClick={() => { import('sonner').then(m => m.toast.info('Reminder creation coming soon')); }}>
                     <Bell className="mr-2 h-4 w-4" />
                     Create Reminder
                   </Button>
@@ -337,7 +340,7 @@ export default function AdminDashboardPage() {
           </TabsContent>
 
           <TabsContent value="onboarding">
-            <ChecklistMaster onCreateNew={() => {}} />
+            <ChecklistMaster onCreateNew={() => { }} />
           </TabsContent>
 
           <TabsContent value="meetings">
@@ -353,7 +356,7 @@ export default function AdminDashboardPage() {
                   <p className="text-sm text-muted-foreground mb-4">
                     View and manage all client meetings
                   </p>
-                  <Button>View All Meetings</Button>
+                  <Button onClick={() => { import('sonner').then(m => m.toast.info('Meetings management coming soon')); }}>View All Meetings</Button>
                 </div>
               </CardContent>
             </Card>
@@ -393,7 +396,7 @@ export default function AdminDashboardPage() {
                   <p className="text-sm text-muted-foreground mb-4">
                     Track all client interactions and communications
                   </p>
-                  <Button>View Timeline</Button>
+                  <Button onClick={() => { import('sonner').then(m => m.toast.info('Timeline view coming soon')); }}>View Timeline</Button>
                 </div>
               </CardContent>
             </Card>

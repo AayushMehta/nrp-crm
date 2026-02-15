@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { formatIndianCurrency } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { Button } from "@/components/ui/button";
@@ -55,6 +57,7 @@ const STORAGE_KEY = 'nrp_crm_calendar_events';
 
 export default function RMDashboard() {
   const { user } = useAuth();
+  const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [eventFilter, setEventFilter] = useState<"all" | EventType>("all");
@@ -171,7 +174,7 @@ export default function RMDashboard() {
 
   // Calculate wealth metrics
   const wealthStats = useMemo(() => {
-    const familyIds = ["family-001", "family-002", "family-003"]; // Mock assigned families
+    const familyIds = ["fam-001", "fam-002"]; // Mock assigned families (matches seed data)
     const aumMetrics = WealthMetricsService.calculateRMAUM(user?.id || '', familyIds);
     const clientSummaries = WealthMetricsService.getClientSummaries(familyIds);
 
@@ -266,7 +269,7 @@ export default function RMDashboard() {
         <div className="grid gap-6 md:grid-cols-4">
           <StatCard
             title="Total AUM"
-            value={`₹${(wealthStats.total_aum / 10000000).toFixed(2)}Cr`}
+            value={formatIndianCurrency(wealthStats.total_aum)}
             description={`${wealthStats.aum_change_percent > 0 ? '+' : ''}${wealthStats.aum_change_percent.toFixed(1)}% this month`}
             icon={TrendingUp}
             iconClassName="text-blue-600"
@@ -289,7 +292,7 @@ export default function RMDashboard() {
           />
           <StatCard
             title="Revenue"
-            value={`₹${(wealthStats.revenue_this_month / 100000).toFixed(1)}L`}
+            value={formatIndianCurrency(wealthStats.revenue_this_month)}
             description="Collected this month"
             icon={IndianRupee}
             iconClassName="text-purple-600"
@@ -320,7 +323,7 @@ export default function RMDashboard() {
                       Risk assessments require your attention
                     </p>
                   </div>
-                  <Button size="sm" variant="outline" className="border-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/30">
+                  <Button size="sm" variant="outline" className="border-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/30" onClick={() => router.push('/rm/clients')}>
                     Review Clients
                   </Button>
                 </div>
@@ -429,7 +432,7 @@ export default function RMDashboard() {
                     </div>
                   </div>
                   <div className="mt-4">
-                    <Button variant="outline" size="sm" className="w-full">
+                    <Button variant="outline" size="sm" className="w-full" onClick={() => router.push('/rm/clients')}>
                       View Details
                     </Button>
                   </div>
@@ -452,7 +455,7 @@ export default function RMDashboard() {
                     </div>
                   </div>
                   <div className="mt-4">
-                    <Button variant="outline" size="sm" className="w-full">
+                    <Button variant="outline" size="sm" className="w-full" onClick={() => router.push('/rm/clients')}>
                       View Details
                     </Button>
                   </div>
@@ -578,7 +581,7 @@ export default function RMDashboard() {
                         <SelectItem value="review">Reviews</SelectItem>
                       </SelectContent>
                     </Select>
-                    <Button className="w-full">
+                    <Button className="w-full" onClick={() => { const { toast } = require('sonner'); toast.info('Event creation coming soon'); }}>
                       <Plus className="mr-2 h-4 w-4" />
                       New Event
                     </Button>
