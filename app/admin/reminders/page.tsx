@@ -4,7 +4,7 @@
 // Admin reminders page with full reminder management
 
 import { useState, useEffect } from "react";
-import { AppLayout } from "@/components/layout/AppLayout";
+import { ConsoleLayout } from "@/components/layout/ConsoleLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatCard } from "@/components/dashboard/StatCard";
@@ -18,6 +18,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Plus, Bell, CheckCircle, Clock, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { UserFlowSection } from "@/components/ui/user-flow-section";
+import { motion } from "framer-motion";
 
 export default function RemindersPage() {
   const { user } = useAuth();
@@ -118,147 +119,154 @@ export default function RemindersPage() {
   const stats = user ? ReminderService.getStats(user.id) : null;
 
   return (
-    <AppLayout>
-      <div className="p-6 space-y-6">
-        {/* Page Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Reminders</h1>
-            <p className="text-muted-foreground">
-              Manage your tasks and automated reminders
-            </p>
+    <ConsoleLayout>
+      <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto space-y-8 pb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="space-y-8"
+        >
+          {/* Page Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Reminders</h1>
+              <p className="text-muted-foreground mt-2 text-lg">
+                Manage your tasks and automated reminders
+              </p>
+            </div>
+            <Button onClick={() => setIsCreateDialogOpen(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md">
+              <Plus className="h-4 w-4 mr-2" />
+              New Reminder
+            </Button>
           </div>
-          <Button onClick={() => setIsCreateDialogOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            New Reminder
-          </Button>
-        </div>
 
-        {/* Statistics Cards */}
-        {stats && (
-          <div className="grid gap-6 md:grid-cols-4">
-            <StatCard
-              title="Overdue"
-              value={stats.overdue}
-              description="Needs attention"
-              icon={AlertTriangle}
-              iconClassName="text-red-600"
-            />
+          {/* Statistics Cards */}
+          {stats && (
+            <div className="grid gap-6 md:grid-cols-4">
+              <StatCard
+                title="Overdue"
+                value={stats.overdue}
+                description="Needs attention"
+                icon={AlertTriangle}
+                iconClassName="text-red-600"
+              />
 
-            <StatCard
-              title="Due Today"
-              value={stats.due_today}
-              description="Today's tasks"
-              icon={Clock}
-              iconClassName="text-yellow-600"
-            />
+              <StatCard
+                title="Due Today"
+                value={stats.due_today}
+                description="Today's tasks"
+                icon={Clock}
+                iconClassName="text-yellow-600"
+              />
 
-            <StatCard
-              title="Due This Week"
-              value={stats.due_this_week}
-              description="Upcoming"
-              icon={Bell}
-              iconClassName="text-blue-600"
-            />
+              <StatCard
+                title="Due This Week"
+                value={stats.due_this_week}
+                description="Upcoming"
+                icon={Bell}
+                iconClassName="text-blue-600"
+              />
 
-            <StatCard
-              title="Completed This Month"
-              value={stats.completed_this_month}
-              description="This month"
-              icon={CheckCircle}
-              iconClassName="text-green-600"
-            />
-          </div>
-        )}
+              <StatCard
+                title="Completed This Month"
+                value={stats.completed_this_month}
+                description="This month"
+                icon={CheckCircle}
+                iconClassName="text-green-600"
+              />
+            </div>
+          )}
 
-        {/* Reminders List */}
-        <Card className="rounded-xl border shadow-sm">
-          <CardHeader>
-            <CardTitle>My Reminders</CardTitle>
-            <CardDescription>
-              All your reminders organized by status
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ReminderList
-              key={refreshKey}
-              userId={user?.id}
-              onComplete={handleCompleteReminder}
-              onSnooze={handleOpenSnooze}
-              onDelete={handleDeleteReminder}
-              showFilters={true}
-            />
-          </CardContent>
-        </Card>
+          {/* Reminders List */}
+          <Card className="rounded-xl border shadow-sm bg-card">
+            <CardHeader>
+              <CardTitle>My Reminders</CardTitle>
+              <CardDescription>
+                All your reminders organized by status
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ReminderList
+                key={refreshKey}
+                userId={user?.id}
+                onComplete={handleCompleteReminder}
+                onSnooze={handleOpenSnooze}
+                onDelete={handleDeleteReminder}
+                showFilters={true}
+              />
+            </CardContent>
+          </Card>
 
-        {/* Create/Edit Dialog */}
-        <ReminderDialog
-          open={isCreateDialogOpen}
-          onOpenChange={setIsCreateDialogOpen}
-          onSave={handleCreateReminder}
-        />
+          {/* Create/Edit Dialog */}
+          <ReminderDialog
+            open={isCreateDialogOpen}
+            onOpenChange={setIsCreateDialogOpen}
+            onSave={handleCreateReminder}
+          />
 
-        {/* Snooze Dialog */}
-        <ReminderSnoozeDialog
-          open={isSnoozeDialogOpen}
-          onOpenChange={setIsSnoozeDialogOpen}
-          reminder={selectedReminder}
-          onSnooze={handleSnoozeReminder}
-        />
+          {/* Snooze Dialog */}
+          <ReminderSnoozeDialog
+            open={isSnoozeDialogOpen}
+            onOpenChange={setIsSnoozeDialogOpen}
+            reminder={selectedReminder}
+            onSnooze={handleSnoozeReminder}
+          />
 
-        {/* User Flow Section */}
-        <UserFlowSection
-          pageName="Admin Reminders"
-          description="System-wide reminder management with recurring patterns"
-          userFlow={[
-            {
-              step: "View Reminder Metrics",
-              description: "Track overdue, due today, due this week, and completed reminders."
-            },
-            {
-              step: "Review Reminder List",
-              description: "Browse reminders grouped by status (Overdue, Today, This Week, Later, Completed, Snoozed) with priority badges."
-            },
-            {
-              step: "Create New Reminder",
-              description: "Set up manual or recurring reminders.",
-              subSteps: [
-                "Enter title and description",
-                "Select family (optional) and priority",
-                "Set due date and time",
-                "Enable recurring if needed (Daily, Weekly, Monthly, Yearly)",
-                "Set end condition (End by date, End after N occurrences, Never end)",
-                "Assign to user"
+          {/* User Flow Section */}
+          <UserFlowSection
+            pageName="Admin Reminders"
+            description="System-wide reminder management with recurring patterns"
+            userFlow={[
+              {
+                step: "View Reminder Metrics",
+                description: "Track overdue, due today, due this week, and completed reminders."
+              },
+              {
+                step: "Review Reminder List",
+                description: "Browse reminders grouped by status (Overdue, Today, This Week, Later, Completed, Snoozed) with priority badges."
+              },
+              {
+                step: "Create New Reminder",
+                description: "Set up manual or recurring reminders.",
+                subSteps: [
+                  "Enter title and description",
+                  "Select family (optional) and priority",
+                  "Set due date and time",
+                  "Enable recurring if needed (Daily, Weekly, Monthly, Yearly)",
+                  "Set end condition (End by date, End after N occurrences, Never end)",
+                  "Assign to user"
+                ]
+              },
+              {
+                step: "Manage Reminders",
+                description: "Complete, snooze, edit, or delete reminders as needed."
+              },
+              {
+                step: "Filter and Search",
+                description: "Filter by priority, status, family, or search by title/description."
+              }
+            ]}
+            bestPractices={[
+              "Check overdue reminders daily",
+              "Set appropriate priority levels",
+              "Use recurring reminders for regular tasks",
+              "Snooze instead of ignoring",
+              "Add completion notes",
+              "Review 'Due Today' first thing each morning"
+            ]}
+            roleSpecific={{
+              role: "Admin",
+              notes: [
+                "System automatically creates reminders for document uploads, rejections, checklist completions, and meetings",
+                "All automated reminders appear in your list",
+                "Recurring reminders continue until end condition met",
+                "Can view and manage reminders for all families"
               ]
-            },
-            {
-              step: "Manage Reminders",
-              description: "Complete, snooze, edit, or delete reminders as needed."
-            },
-            {
-              step: "Filter and Search",
-              description: "Filter by priority, status, family, or search by title/description."
-            }
-          ]}
-          bestPractices={[
-            "Check overdue reminders daily",
-            "Set appropriate priority levels",
-            "Use recurring reminders for regular tasks",
-            "Snooze instead of ignoring",
-            "Add completion notes",
-            "Review 'Due Today' first thing each morning"
-          ]}
-          roleSpecific={{
-            role: "Admin",
-            notes: [
-              "System automatically creates reminders for document uploads, rejections, checklist completions, and meetings",
-              "All automated reminders appear in your list",
-              "Recurring reminders continue until end condition met",
-              "Can view and manage reminders for all families"
-            ]
-          }}
-        />
+            }}
+          />
+        </motion.div>
       </div>
-    </AppLayout>
+    </ConsoleLayout>
   );
 }

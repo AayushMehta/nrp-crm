@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { AppLayout } from "@/components/layout/AppLayout";
+import { ConsoleLayout } from "@/components/layout/ConsoleLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -196,20 +196,23 @@ export default function InvitationsPage() {
   }
 
   return (
-    <AppLayout>
-      <div className="space-y-6">
+    <ConsoleLayout>
+      <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto space-y-8 pb-8">
         {/* Header */}
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Client Invitations
             </h1>
-            <p className="text-muted-foreground mt-1">
-              Manage and track all client onboarding invitations
-            </p>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="outline" className="text-xs border-primary/20 text-primary bg-primary/5">Admin Mode</Badge>
+              <p className="text-muted-foreground text-lg">
+                Manage and track all client onboarding invitations
+              </p>
+            </div>
           </div>
           <Button
-            className="gap-2"
+            className="gap-2 shadow-md"
             onClick={() => router.push("/admin/clients")}
           >
             <Mail className="h-4 w-4" />
@@ -218,39 +221,43 @@ export default function InvitationsPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Total Sent"
             value={stats.total.toString()}
             description="All time invitations"
             icon={Send}
-            iconClassName="text-blue-600"
+            iconClassName="text-blue-600 dark:text-blue-400"
+            className="bg-card hover:shadow-md transition-shadow"
           />
           <StatCard
             title="Pending"
             value={stats.pending.toString()}
             description={`${stats.in_progress} in progress`}
             icon={Clock}
-            iconClassName="text-yellow-600"
+            iconClassName="text-yellow-600 dark:text-yellow-400"
+            className="bg-card hover:shadow-md transition-shadow"
           />
           <StatCard
             title="Completed"
             value={stats.completed.toString()}
             description={`${stats.completion_rate}% completion rate`}
             icon={CheckCircle}
-            iconClassName="text-green-600"
+            iconClassName="text-green-600 dark:text-green-400"
+            className="bg-card hover:shadow-md transition-shadow"
           />
           <StatCard
             title="Avg Completion Time"
             value={stats.average_time_to_complete ? `${stats.average_time_to_complete}d` : "N/A"}
             description="Days to complete"
             icon={TrendingUp}
-            iconClassName="text-purple-600"
+            iconClassName="text-purple-600 dark:text-purple-400"
+            className="bg-card hover:shadow-md transition-shadow"
           />
         </div>
 
         {/* Filters */}
-        <Card className="rounded-xl border shadow-sm">
+        <Card className="rounded-xl border shadow-sm bg-card">
           <CardContent className="p-4">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 flex gap-2">
@@ -260,7 +267,7 @@ export default function InvitationsPage() {
                     placeholder="Search by email or RM name..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 h-10"
                   />
                 </div>
               </div>
@@ -272,7 +279,7 @@ export default function InvitationsPage() {
                     setStatusFilter(value as InvitationStatus | "all")
                   }
                 >
-                  <SelectTrigger className="w-[160px]">
+                  <SelectTrigger className="w-[160px] h-10">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -287,7 +294,7 @@ export default function InvitationsPage() {
                 <Button
                   variant="outline"
                   onClick={loadInvitations}
-                  className="gap-2"
+                  className="gap-2 h-10"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Refresh
@@ -298,12 +305,12 @@ export default function InvitationsPage() {
         </Card>
 
         {/* Invitations Table */}
-        <Card className="rounded-xl border shadow-sm">
+        <Card className="rounded-xl border shadow-sm bg-card overflow-hidden">
           <CardContent className="p-0">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Email</TableHead>
+                <TableRow className="bg-muted/30 hover:bg-muted/30">
+                  <TableHead className="w-[250px]">Email</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Assigned RM</TableHead>
                   <TableHead>Created</TableHead>
@@ -317,7 +324,7 @@ export default function InvitationsPage() {
                   <TableRow>
                     <TableCell
                       colSpan={7}
-                      className="text-center py-8 text-muted-foreground"
+                      className="text-center py-12 text-muted-foreground"
                     >
                       No invitations found.
                     </TableCell>
@@ -333,16 +340,16 @@ export default function InvitationsPage() {
                     return (
                       <TableRow
                         key={invitation.id}
-                        className="cursor-pointer hover:bg-muted/50"
+                        className="cursor-pointer hover:bg-muted/50 transition-colors"
                       >
                         <TableCell>
                           <div className="flex flex-col">
-                            <div className="font-medium">
+                            <div className="font-medium text-foreground">
                               {invitation.email}
                             </div>
                             {invitation.revoked && (
                               <Badge
-                                className="bg-red-100 text-red-800 border-red-200 w-fit mt-1"
+                                className="bg-red-50 text-red-700 border-red-200 w-fit mt-1 text-[10px]"
                                 variant="outline"
                               >
                                 Revoked
@@ -360,29 +367,33 @@ export default function InvitationsPage() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          {invitation.assigned_rm_name || (
-                            <span className="text-muted-foreground">
+                          {invitation.assigned_rm_name ? (
+                            <div className="flex items-center gap-2">
+                              <span className="bg-primary/10 text-primary rounded-full p-1"><Users className="h-3 w-3" /></span>
+                              <span className="font-medium text-sm">{invitation.assigned_rm_name}</span>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground text-sm italic">
                               Unassigned
                             </span>
                           )}
                         </TableCell>
-                        <TableCell className="text-sm">
+                        <TableCell className="text-sm text-muted-foreground">
                           {formatDate(invitation.created_at)}
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col">
-                            <div className="text-sm">
+                            <div className="text-sm text-muted-foreground">
                               {formatDate(invitation.expires_at)}
                             </div>
                             {invitation.status !== "completed" &&
                               invitation.status !== "expired" &&
                               !invitation.revoked && (
                                 <div
-                                  className={`text-xs mt-1 ${
-                                    daysUntilExpiry <= 3
-                                      ? "text-red-600 font-semibold"
-                                      : "text-muted-foreground"
-                                  }`}
+                                  className={`text-xs mt-1 font-medium ${daysUntilExpiry <= 3
+                                    ? "text-red-600"
+                                    : "text-amber-600"
+                                    }`}
                                 >
                                   {daysUntilExpiry > 0
                                     ? `${daysUntilExpiry} days left`
@@ -393,11 +404,12 @@ export default function InvitationsPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col gap-1">
-                            <div className="text-sm">
+                            <div className="text-sm text-muted-foreground">
                               Accessed: {invitation.access_count}x
                             </div>
                             {invitation.accepted_at && (
-                              <div className="text-xs text-green-600">
+                              <div className="text-xs text-green-600 flex items-center gap-1">
+                                <CheckCircle className="h-3 w-3" />
                                 Started:{" "}
                                 {formatDate(invitation.accepted_at)}
                               </div>
@@ -407,7 +419,7 @@ export default function InvitationsPage() {
                         <TableCell className="text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                                 <MoreVertical className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -431,7 +443,7 @@ export default function InvitationsPage() {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                       onClick={() => handleRevoke(invitation)}
-                                      className="text-red-600"
+                                      className="text-red-600 focus:text-red-700 focus:bg-red-50"
                                     >
                                       <Ban className="h-4 w-4 mr-2" />
                                       Revoke
@@ -466,17 +478,17 @@ export default function InvitationsPage() {
 
         {/* Summary Info */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="rounded-xl border shadow-sm">
+          <Card className="rounded-xl border shadow-sm bg-blue-50/50 dark:bg-blue-900/10">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <Users className="h-6 w-6 text-blue-600" />
+                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <Users className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-blue-600/80 dark:text-blue-400/80 font-medium">
                     Active Invitations
                   </p>
-                  <p className="text-2xl font-bold">
+                  <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">
                     {stats.pending + stats.in_progress}
                   </p>
                 </div>
@@ -484,37 +496,37 @@ export default function InvitationsPage() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-xl border shadow-sm">
+          <Card className="rounded-xl border shadow-sm bg-red-50/50 dark:bg-red-900/10">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-red-100 rounded-lg">
-                  <XCircle className="h-6 w-6 text-red-600" />
+                <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                  <XCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-red-600/80 dark:text-red-400/80 font-medium">
                     Expired
                   </p>
-                  <p className="text-2xl font-bold">{stats.expired}</p>
+                  <p className="text-2xl font-bold text-red-700 dark:text-red-300">{stats.expired}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="rounded-xl border shadow-sm">
+          <Card className="rounded-xl border shadow-sm bg-amber-50/50 dark:bg-amber-900/10">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-amber-100 rounded-lg">
-                  <Ban className="h-6 w-6 text-amber-600" />
+                <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+                  <Ban className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Revoked</p>
-                  <p className="text-2xl font-bold">{stats.revoked}</p>
+                  <p className="text-sm text-amber-600/80 dark:text-amber-400/80 font-medium">Revoked</p>
+                  <p className="text-2xl font-bold text-amber-700 dark:text-amber-300">{stats.revoked}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
-    </AppLayout>
+    </ConsoleLayout>
   );
 }

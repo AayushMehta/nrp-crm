@@ -1,7 +1,7 @@
 // app/admin/onboarding/page.tsx
 "use client";
 
-import { AppLayout } from "@/components/layout/AppLayout";
+import { ConsoleLayout } from "@/components/layout/ConsoleLayout";
 import { ChecklistMaster } from "@/components/onboarding/ChecklistMaster";
 import { ChecklistService } from "@/lib/services/checklist-service";
 import { useRouter } from "next/navigation";
@@ -24,8 +24,8 @@ export default function AdminOnboardingPage() {
   };
 
   return (
-    <AppLayout>
-      <div className="space-y-6">
+    <ConsoleLayout>
+      <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 pb-8">
         <ChecklistMaster onCreateNew={handleCreateNew} />
 
         <UserFlowSection
@@ -82,6 +82,6 @@ export default function AdminOnboardingPage() {
           }}
         />
       </div>
-    </AppLayout>
+    </ConsoleLayout>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { AppLayout } from "@/components/layout/AppLayout";
+import { ConsoleLayout } from "@/components/layout/ConsoleLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -103,12 +103,12 @@ export default function RMClientsPage() {
   }
 
   return (
-    <AppLayout>
-      <div className="space-y-6">
+    <ConsoleLayout>
+      <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto space-y-8 pb-8">
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold tracking-tight">My Clients</h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-muted-foreground mt-1 text-lg">
             Manage your assigned client relationships
           </p>
         </div>
@@ -159,7 +159,7 @@ export default function RMClientsPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                    className="pl-10"
+                    className="pl-10 h-10"
                   />
                 </div>
                 <Button onClick={handleSearch} variant="secondary">
@@ -173,7 +173,7 @@ export default function RMClientsPage() {
                   setFilters({ ...filters, status: value === "all" ? undefined : value as ClientStatus })
                 }
               >
-                <SelectTrigger className="w-[140px]">
+                <SelectTrigger className="w-[140px] h-10">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -311,6 +311,6 @@ export default function RMClientsPage() {
         onOpenChange={setDetailDialogOpen}
         client={selectedClient}
       />
-    </AppLayout>
+    </ConsoleLayout>
   );
 }

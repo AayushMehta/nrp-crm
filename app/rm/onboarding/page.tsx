@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { AppLayout } from '@/components/layout/AppLayout';
+import { ConsoleLayout } from '@/components/layout/ConsoleLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -195,163 +195,161 @@ export default function RMOnboardingPage() {
 
     // ─── Render ──────────────────────────────────────────────
     return (
-        <AppLayout>
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20">
-                <div className="max-w-5xl mx-auto px-6 py-8">
-                    {/* Header */}
-                    <div className="mb-8">
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25">
-                                <UserPlus className="h-5 w-5" />
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Create Client Invitation</h1>
-                                <p className="text-sm text-gray-500">Configure onboarding steps, questionnaires, and documents for the client</p>
-                            </div>
+        <ConsoleLayout>
+            <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+                {/* Header */}
+                <div className="mb-8">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25">
+                            <UserPlus className="h-5 w-5" />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900">Create Client Invitation</h1>
+                            <p className="text-sm text-gray-500">Configure onboarding steps, questionnaires, and documents for the client</p>
                         </div>
                     </div>
+                </div>
 
-                    {/* Step Indicator */}
-                    <div className="mb-8">
-                        <div className="flex items-center gap-1">
-                            {WIZARD_STEPS.map((s, idx) => (
-                                <div key={s.id} className="flex items-center flex-1">
-                                    <button
-                                        onClick={() => { if (s.id < step) setStep(s.id); }}
-                                        className={cn(
-                                            'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex-1',
-                                            step === s.id
-                                                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25'
-                                                : s.id < step
-                                                    ? 'bg-blue-100 text-blue-700 hover:bg-blue-200 cursor-pointer'
-                                                    : 'bg-white/60 text-gray-400 cursor-default'
-                                        )}
-                                    >
-                                        <span className={cn(
-                                            'flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold',
-                                            step === s.id ? 'bg-white/20' : s.id < step ? 'bg-blue-200' : 'bg-gray-100',
-                                        )}>
-                                            {s.id < step ? <Check className="h-3.5 w-3.5" /> : s.id}
-                                        </span>
-                                        <span className="hidden sm:inline">{s.label}</span>
-                                    </button>
-                                    {idx < WIZARD_STEPS.length - 1 && (
-                                        <ChevronRight className={cn(
-                                            'h-4 w-4 mx-1 flex-shrink-0',
-                                            s.id < step ? 'text-blue-400' : 'text-gray-300'
-                                        )} />
+                {/* Step Indicator */}
+                <div className="mb-8">
+                    <div className="flex items-center gap-1">
+                        {WIZARD_STEPS.map((s, idx) => (
+                            <div key={s.id} className="flex items-center flex-1">
+                                <button
+                                    onClick={() => { if (s.id < step) setStep(s.id); }}
+                                    className={cn(
+                                        'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex-1',
+                                        step === s.id
+                                            ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25'
+                                            : s.id < step
+                                                ? 'bg-blue-100 text-blue-700 hover:bg-blue-200 cursor-pointer'
+                                                : 'bg-white/60 text-gray-400 cursor-default'
                                     )}
-                                </div>
+                                >
+                                    <span className={cn(
+                                        'flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold',
+                                        step === s.id ? 'bg-white/20' : s.id < step ? 'bg-blue-200' : 'bg-gray-100',
+                                    )}>
+                                        {s.id < step ? <Check className="h-3.5 w-3.5" /> : s.id}
+                                    </span>
+                                    <span className="hidden sm:inline">{s.label}</span>
+                                </button>
+                                {idx < WIZARD_STEPS.length - 1 && (
+                                    <ChevronRight className={cn(
+                                        'h-4 w-4 mx-1 flex-shrink-0',
+                                        s.id < step ? 'text-blue-400' : 'text-gray-300'
+                                    )} />
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Step Content */}
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={step}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.25 }}
+                    >
+                        {step === 1 && renderStep1()}
+                        {step === 2 && renderStep2()}
+                        {step === 3 && renderStep3()}
+                        {step === 4 && renderStep4()}
+                    </motion.div>
+                </AnimatePresence>
+
+                {/* Navigation */}
+                <div className="flex items-center justify-between mt-8">
+                    <Button
+                        variant="outline"
+                        onClick={handleBack}
+                        disabled={step === 1}
+                        className={step === 1 ? 'invisible' : ''}
+                    >
+                        <ArrowLeft className="h-4 w-4 mr-2" /> Back
+                    </Button>
+
+                    {step < 4 ? (
+                        <Button
+                            onClick={handleNext}
+                            disabled={!canProceed()}
+                            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white min-w-[160px] shadow-lg shadow-blue-500/25"
+                        >
+                            Continue <ArrowRight className="h-4 w-4 ml-2" />
+                        </Button>
+                    ) : (
+                        <Button
+                            onClick={handleCreateInvitation}
+                            disabled={isCreating}
+                            className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white min-w-[200px] shadow-lg shadow-emerald-500/25"
+                        >
+                            {isCreating ? (
+                                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Creating...</>
+                            ) : (
+                                <><Send className="h-4 w-4 mr-2" /> Create & Send Invitation</>
+                            )}
+                        </Button>
+                    )}
+                </div>
+
+                {/* Recent Invitations */}
+                {recentInvitations.length > 0 && (
+                    <div className="mt-12">
+                        <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <Users className="h-5 w-5 text-emerald-600" />
+                            Recent Invitations ({recentInvitations.length})
+                        </h2>
+                        <div className="space-y-3">
+                            {recentInvitations.slice(0, 5).map(inv => (
+                                <Card key={inv.token} className="border-0 shadow-sm bg-white/80 backdrop-blur hover:shadow-md transition-shadow">
+                                    <CardContent className="py-4 px-5">
+                                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 text-emerald-700 font-bold text-sm">
+                                                    {inv.clientName.charAt(0).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-semibold text-gray-900">{inv.clientName}</p>
+                                                    <p className="text-xs text-gray-500 flex items-center gap-2">
+                                                        {inv.clientEmail}
+                                                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                                            {SERVICE_TYPE_CONFIG[inv.serviceType].name}
+                                                        </Badge>
+                                                        <Badge variant={inv.status === 'completed' ? 'default' : 'secondary'} className="text-[10px] px-1.5 py-0">
+                                                            {inv.status}
+                                                        </Badge>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Button
+                                                    variant="outline" size="sm"
+                                                    onClick={() => copyLink(inv.token)}
+                                                    className="text-xs"
+                                                >
+                                                    {copiedToken === inv.token
+                                                        ? <><Check className="h-3.5 w-3.5 mr-1 text-emerald-600" /> Copied!</>
+                                                        : <><Copy className="h-3.5 w-3.5 mr-1" /> Copy Link</>
+                                                    }
+                                                </Button>
+                                                <Link href={`/client/onboarding/${inv.token}`} target="_blank">
+                                                    <Button variant="outline" size="sm" className="text-xs">
+                                                        <ExternalLink className="h-3.5 w-3.5 mr-1" /> Open
+                                                    </Button>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
                             ))}
                         </div>
                     </div>
-
-                    {/* Step Content */}
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={step}
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            transition={{ duration: 0.25 }}
-                        >
-                            {step === 1 && renderStep1()}
-                            {step === 2 && renderStep2()}
-                            {step === 3 && renderStep3()}
-                            {step === 4 && renderStep4()}
-                        </motion.div>
-                    </AnimatePresence>
-
-                    {/* Navigation */}
-                    <div className="flex items-center justify-between mt-8">
-                        <Button
-                            variant="outline"
-                            onClick={handleBack}
-                            disabled={step === 1}
-                            className={step === 1 ? 'invisible' : ''}
-                        >
-                            <ArrowLeft className="h-4 w-4 mr-2" /> Back
-                        </Button>
-
-                        {step < 4 ? (
-                            <Button
-                                onClick={handleNext}
-                                disabled={!canProceed()}
-                                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white min-w-[160px] shadow-lg shadow-blue-500/25"
-                            >
-                                Continue <ArrowRight className="h-4 w-4 ml-2" />
-                            </Button>
-                        ) : (
-                            <Button
-                                onClick={handleCreateInvitation}
-                                disabled={isCreating}
-                                className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white min-w-[200px] shadow-lg shadow-emerald-500/25"
-                            >
-                                {isCreating ? (
-                                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Creating...</>
-                                ) : (
-                                    <><Send className="h-4 w-4 mr-2" /> Create & Send Invitation</>
-                                )}
-                            </Button>
-                        )}
-                    </div>
-
-                    {/* Recent Invitations */}
-                    {recentInvitations.length > 0 && (
-                        <div className="mt-12">
-                            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                <Users className="h-5 w-5 text-emerald-600" />
-                                Recent Invitations ({recentInvitations.length})
-                            </h2>
-                            <div className="space-y-3">
-                                {recentInvitations.slice(0, 5).map(inv => (
-                                    <Card key={inv.token} className="border-0 shadow-sm bg-white/80 backdrop-blur hover:shadow-md transition-shadow">
-                                        <CardContent className="py-4 px-5">
-                                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 text-emerald-700 font-bold text-sm">
-                                                        {inv.clientName.charAt(0).toUpperCase()}
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-sm font-semibold text-gray-900">{inv.clientName}</p>
-                                                        <p className="text-xs text-gray-500 flex items-center gap-2">
-                                                            {inv.clientEmail}
-                                                            <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                                                                {SERVICE_TYPE_CONFIG[inv.serviceType].name}
-                                                            </Badge>
-                                                            <Badge variant={inv.status === 'completed' ? 'default' : 'secondary'} className="text-[10px] px-1.5 py-0">
-                                                                {inv.status}
-                                                            </Badge>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <Button
-                                                        variant="outline" size="sm"
-                                                        onClick={() => copyLink(inv.token)}
-                                                        className="text-xs"
-                                                    >
-                                                        {copiedToken === inv.token
-                                                            ? <><Check className="h-3.5 w-3.5 mr-1 text-emerald-600" /> Copied!</>
-                                                            : <><Copy className="h-3.5 w-3.5 mr-1" /> Copy Link</>
-                                                        }
-                                                    </Button>
-                                                    <Link href={`/client/onboarding/${inv.token}`} target="_blank">
-                                                        <Button variant="outline" size="sm" className="text-xs">
-                                                            <ExternalLink className="h-3.5 w-3.5 mr-1" /> Open
-                                                        </Button>
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
+                )}
             </div>
-        </AppLayout>
+        </ConsoleLayout>
     );
 
     // ─── Step Renderers ──────────────────────────────────────

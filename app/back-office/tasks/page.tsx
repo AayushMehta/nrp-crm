@@ -5,7 +5,7 @@
 
 import { useState, useMemo } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { AppLayout } from '@/components/layout/AppLayout';
+import { ConsoleLayout } from '@/components/layout/ConsoleLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -132,25 +132,28 @@ export default function BackOfficeTasksPage() {
     };
 
     return (
-        <AppLayout>
+        <ConsoleLayout>
             <motion.div
-                className="p-6 space-y-6 min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/20"
+                className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto space-y-8 pb-8"
                 variants={pageVariants}
                 initial="hidden"
                 animate="visible"
             >
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Assigned Tasks</h1>
-                        <p className="text-gray-500 text-sm mt-1">Manage document verification, compliance, and data entry tasks</p>
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Assigned Tasks</h1>
+                        <div className="flex items-center gap-2 mt-2">
+                            <Badge variant="outline" className="text-xs border-primary/20 text-primary bg-primary/5">Back Office Mode</Badge>
+                            <p className="text-muted-foreground text-lg">Manage document verification, compliance, and data entry tasks</p>
+                        </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <Badge className="bg-amber-100 text-amber-700 border-0 text-xs px-3 py-1">
-                            <Clock className="h-3 w-3 mr-1" /> {pendingCount} pending
+                        <Badge className="bg-amber-100 text-amber-700 border-0 text-sm px-3 py-1">
+                            <Clock className="h-3.5 w-3.5 mr-1.5" /> {pendingCount} pending
                         </Badge>
-                        <Badge className="bg-emerald-100 text-emerald-700 border-0 text-xs px-3 py-1">
-                            <CheckCircle2 className="h-3 w-3 mr-1" /> {completedCount} done
+                        <Badge className="bg-emerald-100 text-emerald-700 border-0 text-sm px-3 py-1">
+                            <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" /> {completedCount} done
                         </Badge>
                     </div>
                 </div>
@@ -158,16 +161,16 @@ export default function BackOfficeTasksPage() {
                 {/* Stats */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {[
-                        { label: 'Pending', value: pendingCount, color: 'from-amber-500 to-orange-500', icon: Clock },
-                        { label: 'In Progress', value: inProgressCount, color: 'from-blue-500 to-cyan-500', icon: Timer },
-                        { label: 'Completed', value: completedCount, color: 'from-emerald-500 to-teal-500', icon: CheckCircle2 },
+                        { label: 'Pending', value: pendingCount, color: 'from-amber-500 to-orange-500', icon: Clock, bg: 'bg-amber-50 dark:bg-amber-900/10' },
+                        { label: 'In Progress', value: inProgressCount, color: 'from-blue-500 to-cyan-500', icon: Timer, bg: 'bg-blue-50 dark:bg-blue-900/10' },
+                        { label: 'Completed', value: completedCount, color: 'from-emerald-500 to-teal-500', icon: CheckCircle2, bg: 'bg-emerald-50 dark:bg-emerald-900/10' },
                     ].map(stat => (
-                        <Card key={stat.label} className="border-0 shadow-sm bg-white">
-                            <CardContent className="pt-5 pb-4">
+                        <Card key={stat.label} className="border shadow-sm bg-card overflow-hidden">
+                            <CardContent className={cn("pt-5 pb-4", stat.bg)}>
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-gray-500 font-medium">{stat.label}</p>
-                                        <p className="text-3xl font-bold text-gray-900 mt-1">{stat.value}</p>
+                                        <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{stat.label}</p>
+                                        <p className="text-3xl font-bold text-foreground mt-1">{stat.value}</p>
                                     </div>
                                     <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-md', stat.color)}>
                                         <stat.icon className="h-5 w-5" />
@@ -180,128 +183,136 @@ export default function BackOfficeTasksPage() {
                 </div>
 
                 {/* Task List */}
-                <Card className="border-0 shadow-lg bg-white">
-                    <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
+                <Card className="border shadow-sm bg-card">
+                    <CardHeader className="pb-3 border-b">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>
                                 <CardTitle className="flex items-center gap-2">
-                                    <CheckSquare className="h-5 w-5 text-blue-600" />
+                                    <CheckSquare className="h-5 w-5 text-primary" />
                                     Task Queue
                                 </CardTitle>
                                 <CardDescription className="mt-0.5">Click actions to update task status</CardDescription>
                             </div>
+
+                            <div className="flex items-center gap-2 flex-wrap">
+                                {(['all', 'pending', 'in_progress', 'completed'] as const).map(f => (
+                                    <button
+                                        key={f}
+                                        onClick={() => setFilter(f)}
+                                        className={cn(
+                                            'px-3 py-1.5 rounded-lg text-xs font-medium transition-all border',
+                                            filter === f
+                                                ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                                                : 'bg-background text-muted-foreground border-input hover:bg-muted'
+                                        )}
+                                    >
+                                        {f === 'all' ? 'All' : f === 'in_progress' ? 'In Progress' : f.charAt(0).toUpperCase() + f.slice(1)}
+                                        {f === 'pending' && ` (${pendingCount})`}
+                                        {f === 'in_progress' && ` (${inProgressCount})`}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
-                        <div className="flex items-center gap-2 mt-3 flex-wrap">
-                            {(['all', 'pending', 'in_progress', 'completed'] as const).map(f => (
-                                <button
-                                    key={f}
-                                    onClick={() => setFilter(f)}
-                                    className={cn(
-                                        'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
-                                        filter === f
-                                            ? 'bg-blue-600 text-white shadow-sm'
-                                            : 'bg-slate-100 text-gray-600 hover:bg-slate-200'
-                                    )}
-                                >
-                                    {f === 'all' ? 'All' : f === 'in_progress' ? 'In Progress' : f.charAt(0).toUpperCase() + f.slice(1)}
-                                    {f === 'pending' && ` (${pendingCount})`}
-                                    {f === 'in_progress' && ` (${inProgressCount})`}
-                                </button>
-                            ))}
-
-                            <div className="flex-1" />
-
+                        <div className="pt-4">
                             <div className="relative">
-                                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+                                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <input
                                     type="text"
                                     placeholder="Search tasks..."
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
-                                    className="pl-8 pr-3 py-1.5 rounded-lg bg-slate-100 border-0 text-xs w-40 focus:w-52 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                                    className="pl-9 pr-3 py-2 rounded-lg bg-background border border-input text-sm w-full md:w-64 focus:w-80 transition-all focus:outline-none focus:ring-2 focus:ring-primary/20"
                                 />
                             </div>
                         </div>
                     </CardHeader>
 
-                    <CardContent className="pt-0">
-                        <div className="space-y-2">
+                    <CardContent className="pt-4">
+                        <div className="space-y-3">
                             {filteredTasks.length === 0 ? (
-                                <div className="text-center py-8">
-                                    <CheckCircle2 className="h-10 w-10 text-emerald-300 mx-auto mb-2" />
-                                    <p className="text-sm text-gray-500">No tasks match your filter.</p>
+                                <div className="text-center py-12">
+                                    <div className="bg-muted/30 p-4 rounded-full w-fit mx-auto mb-3">
+                                        <CheckCircle2 className="h-8 w-8 text-muted-foreground" />
+                                    </div>
+                                    <p className="text-muted-foreground">No tasks match your filter.</p>
                                 </div>
                             ) : (
                                 filteredTasks.map(task => (
                                     <div
                                         key={task.id}
                                         className={cn(
-                                            'p-3.5 rounded-xl border transition-all hover:shadow-sm group',
+                                            'p-4 rounded-xl border transition-all hover:bg-muted/40 group',
                                             task.status === 'completed'
-                                                ? 'bg-slate-50/50 border-slate-100'
-                                                : 'bg-white border-gray-100 hover:border-blue-200'
+                                                ? 'bg-muted/30 border-border opacity-75'
+                                                : 'bg-card border-border hover:border-primary/30'
                                         )}
                                     >
-                                        <div className="flex items-start gap-3">
+                                        <div className="flex flex-col md:flex-row md:items-start gap-4">
                                             <div className={cn(
-                                                'flex h-9 w-9 items-center justify-center rounded-lg flex-shrink-0',
+                                                'flex h-10 w-10 items-center justify-center rounded-lg flex-shrink-0',
                                                 getTypeColor(task.type)
                                             )}>
                                                 {getTypeIcon(task.type)}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <div className="flex items-start justify-between gap-2">
-                                                    <p className={cn(
-                                                        'text-sm font-medium',
-                                                        task.status === 'completed' ? 'text-gray-400 line-through' : 'text-gray-900'
-                                                    )}>
-                                                        {task.title}
-                                                    </p>
-                                                    <Badge className={cn(
-                                                        'text-[10px] border-0 flex-shrink-0',
-                                                        task.status === 'pending' ? 'bg-amber-100 text-amber-700' :
-                                                            task.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
-                                                                'bg-emerald-100 text-emerald-700'
-                                                    )}>
-                                                        {task.status === 'in_progress' ? 'In Progress' : task.status.charAt(0).toUpperCase() + task.status.slice(1)}
-                                                    </Badge>
-                                                </div>
-                                                <div className="flex items-center gap-3 mt-1.5">
-                                                    <span className="text-xs text-gray-500 flex items-center gap-1">
-                                                        <Users className="h-3 w-3" /> {task.client}
-                                                    </span>
-                                                    <span className="text-xs text-gray-500 flex items-center gap-1">
-                                                        <Calendar className="h-3 w-3" />
-                                                        {new Date(task.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-                                                    </span>
-                                                    {getPriorityBadge(task.priority)}
-                                                    <Badge variant="outline" className={cn('text-[10px] px-1.5', getTypeColor(task.type))}>
-                                                        {getTypeLabel(task.type)}
-                                                    </Badge>
-                                                </div>
-                                                {/* Action Buttons */}
-                                                {task.status !== 'completed' && (
-                                                    <div className="flex items-center gap-2 mt-2.5">
-                                                        {task.status === 'pending' && (
-                                                            <Button
-                                                                size="sm"
-                                                                variant="outline"
-                                                                className="h-7 text-xs"
-                                                                onClick={() => updateTaskStatus(task.id, 'in_progress')}
-                                                            >
-                                                                <Timer className="h-3 w-3 mr-1" /> Start
-                                                            </Button>
-                                                        )}
-                                                        <Button
-                                                            size="sm"
-                                                            className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700"
-                                                            onClick={() => updateTaskStatus(task.id, 'completed')}
-                                                        >
-                                                            <CheckCircle2 className="h-3 w-3 mr-1" /> Complete
-                                                        </Button>
+                                                <div className="flex flex-col md:flex-row md:items-start justify-between gap-2">
+                                                    <div>
+                                                        <p className={cn(
+                                                            'font-medium text-base',
+                                                            task.status === 'completed' ? 'text-muted-foreground line-through' : 'text-foreground'
+                                                        )}>
+                                                            {task.title}
+                                                        </p>
+                                                        <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+                                                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                                                <Users className="h-3.5 w-3.5" /> {task.client}
+                                                            </span>
+                                                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                                                <Calendar className="h-3.5 w-3.5" />
+                                                                {new Date(task.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                                                            </span>
+                                                            {getPriorityBadge(task.priority)}
+                                                            <Badge variant="outline" className={cn('text-[10px] px-1.5', getTypeColor(task.type))}>
+                                                                {getTypeLabel(task.type)}
+                                                            </Badge>
+                                                        </div>
                                                     </div>
-                                                )}
+
+                                                    <div className="flex items-center gap-3 mt-2 md:mt-0">
+                                                        <Badge className={cn(
+                                                            'text-[10px] border-0 flex-shrink-0 h-6 px-2',
+                                                            task.status === 'pending' ? 'bg-amber-100 text-amber-700' :
+                                                                task.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                                                                    'bg-emerald-100 text-emerald-700'
+                                                        )}>
+                                                            {task.status === 'in_progress' ? 'In Progress' : task.status.charAt(0).toUpperCase() + task.status.slice(1)}
+                                                        </Badge>
+
+                                                        {/* Action Buttons */}
+                                                        {task.status !== 'completed' && (
+                                                            <div className="flex items-center gap-2">
+                                                                {task.status === 'pending' && (
+                                                                    <Button
+                                                                        size="sm"
+                                                                        variant="outline"
+                                                                        className="h-8 text-xs"
+                                                                        onClick={() => updateTaskStatus(task.id, 'in_progress')}
+                                                                    >
+                                                                        <Timer className="h-3.5 w-3.5 mr-1.5" /> Start
+                                                                    </Button>
+                                                                )}
+                                                                <Button
+                                                                    size="sm"
+                                                                    className="h-8 text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
+                                                                    onClick={() => updateTaskStatus(task.id, 'completed')}
+                                                                >
+                                                                    <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" /> Complete
+                                                                </Button>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -311,6 +322,6 @@ export default function BackOfficeTasksPage() {
                     </CardContent>
                 </Card>
             </motion.div>
-        </AppLayout>
+        </ConsoleLayout>
     );
 }

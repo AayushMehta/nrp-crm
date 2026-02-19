@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { AppLayout } from '@/components/layout/AppLayout';
+import { ConsoleLayout } from '@/components/layout/ConsoleLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -129,9 +129,9 @@ export default function BackOfficeDashboard() {
     };
 
     return (
-        <AppLayout>
+        <ConsoleLayout>
             <motion.div
-                className="p-6 space-y-6 min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-purple-50/10"
+                className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto space-y-8 pb-8"
                 variants={pageVariants}
                 initial="hidden"
                 animate="visible"
@@ -139,22 +139,20 @@ export default function BackOfficeDashboard() {
                 {/* Header */}
                 <div className="flex items-start justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                             Welcome back, {user?.name || 'Back Office'}
                         </h1>
-                        <p className="text-gray-500 mt-1 text-sm">Here&apos;s your task overview — {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                        <p className="text-muted-foreground mt-1 text-lg">Here&apos;s your task overview — {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Badge className="bg-emerald-100 text-emerald-700 border-0 text-xs px-3 py-1">
+                        <Badge className="bg-emerald-100 text-emerald-700 border-0 text-xs px-3 py-1 scale-110">
                             <CheckCircle2 className="h-3 w-3 mr-1" /> {completedCount} completed today
                         </Badge>
                     </div>
                 </div>
 
                 {/* Stats Grid */}
-                <div
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-                >
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {stats.map((stat, i) => (
                         <motion.div
                             key={stat.label}
@@ -162,13 +160,13 @@ export default function BackOfficeDashboard() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: i * 0.1 }}
                         >
-                            <Card className="border-0 shadow-sm bg-white/90 backdrop-blur hover:shadow-md transition-shadow overflow-hidden relative">
+                            <Card className="border shadow-sm bg-card hover:shadow-md transition-shadow overflow-hidden relative">
                                 <CardContent className="pt-5 pb-4">
                                     <div className="flex items-start justify-between">
                                         <div>
-                                            <p className="text-xs text-gray-500 font-medium">{stat.label}</p>
-                                            <p className="text-3xl font-bold text-gray-900 mt-1">{stat.value}</p>
-                                            <p className={cn('text-xs mt-1.5', stat.textColor)}>{stat.change}</p>
+                                            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{stat.label}</p>
+                                            <p className="text-3xl font-bold text-foreground mt-1">{stat.value}</p>
+                                            <p className={cn('text-xs mt-1.5 font-medium', stat.textColor)}>{stat.change}</p>
                                         </div>
                                         <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-lg', stat.color)}>
                                             <stat.icon className="h-5 w-5" />
@@ -184,11 +182,11 @@ export default function BackOfficeDashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Task List — spans 2 columns */}
                     <div className="lg:col-span-2">
-                        <Card className="border-0 shadow-lg bg-white/90 backdrop-blur">
-                            <CardHeader className="pb-3">
+                        <Card className="border shadow-md bg-card">
+                            <CardHeader className="pb-3 border-b bg-muted/20">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <CardTitle className="flex items-center gap-2">
+                                        <CardTitle className="flex items-center gap-2 text-lg">
                                             <ClipboardList className="h-5 w-5 text-blue-600" />
                                             Task Queue
                                         </CardTitle>
@@ -197,7 +195,7 @@ export default function BackOfficeDashboard() {
                                 </div>
 
                                 {/* Filters */}
-                                <div className="flex items-center gap-2 mt-3 flex-wrap">
+                                <div className="flex items-center gap-2 mt-4 flex-wrap">
                                     {(['all', 'pending', 'in_progress', 'completed'] as const).map(f => (
                                         <button
                                             key={f}
@@ -205,8 +203,8 @@ export default function BackOfficeDashboard() {
                                             className={cn(
                                                 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
                                                 taskFilter === f
-                                                    ? 'bg-blue-600 text-white shadow-sm'
-                                                    : 'bg-slate-100 text-gray-600 hover:bg-slate-200'
+                                                    ? 'bg-primary text-primary-foreground shadow-sm'
+                                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
                                             )}
                                         >
                                             {f === 'all' ? 'All' : f === 'in_progress' ? 'In Progress' : f.charAt(0).toUpperCase() + f.slice(1)}
@@ -219,34 +217,34 @@ export default function BackOfficeDashboard() {
 
                                     {/* Search */}
                                     <div className="relative">
-                                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+                                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                                         <input
                                             type="text"
                                             placeholder="Search tasks..."
                                             value={searchQuery}
                                             onChange={e => setSearchQuery(e.target.value)}
-                                            className="pl-8 pr-3 py-1.5 rounded-lg bg-slate-100 border-0 text-xs w-40 focus:w-52 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                                            className="pl-8 pr-3 py-1.5 rounded-lg bg-muted border-transparent text-xs w-40 focus:w-52 transition-all focus:outline-none focus:ring-2 focus:ring-ring"
                                         />
                                     </div>
                                 </div>
                             </CardHeader>
 
-                            <CardContent className="pt-0">
+                            <CardContent className="pt-0 bg-muted/5 p-4">
                                 <div className="space-y-2">
                                     {filteredTasks.length === 0 ? (
-                                        <div className="text-center py-8">
-                                            <CheckCircle2 className="h-10 w-10 text-emerald-300 mx-auto mb-2" />
-                                            <p className="text-sm text-gray-500">No tasks match your filter.</p>
+                                        <div className="text-center py-12">
+                                            <CheckCircle2 className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
+                                            <p className="text-sm text-muted-foreground font-medium">No tasks match your filter.</p>
                                         </div>
                                     ) : (
                                         filteredTasks.map(task => (
                                             <div
                                                 key={task.id}
                                                 className={cn(
-                                                    'p-3.5 rounded-xl border transition-all hover:shadow-sm cursor-pointer group',
+                                                    'p-3.5 rounded-xl border transition-all hover:shadow-md cursor-pointer group',
                                                     task.status === 'completed'
-                                                        ? 'bg-slate-50/50 border-slate-100'
-                                                        : 'bg-white border-gray-100 hover:border-blue-200'
+                                                        ? 'bg-muted/30 border-border opacity-70'
+                                                        : 'bg-card border-border hover:border-primary/30'
                                                 )}
                                             >
                                                 <div className="flex items-start gap-3">
@@ -259,28 +257,28 @@ export default function BackOfficeDashboard() {
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex items-start justify-between gap-2">
                                                             <p className={cn(
-                                                                'text-sm font-medium',
-                                                                task.status === 'completed' ? 'text-gray-400 line-through' : 'text-gray-900'
+                                                                'text-sm font-semibold',
+                                                                task.status === 'completed' ? 'text-muted-foreground line-through' : 'text-foreground'
                                                             )}>
                                                                 {task.title}
                                                             </p>
                                                             {getStatusBadge(task.status)}
                                                         </div>
                                                         <div className="flex items-center gap-3 mt-1.5">
-                                                            <span className="text-xs text-gray-500 flex items-center gap-1">
+                                                            <span className="text-xs text-muted-foreground flex items-center gap-1">
                                                                 <Users className="h-3 w-3" /> {task.client}
                                                             </span>
-                                                            <span className="text-xs text-gray-500 flex items-center gap-1">
+                                                            <span className="text-xs text-muted-foreground flex items-center gap-1">
                                                                 <Calendar className="h-3 w-3" />
                                                                 {new Date(task.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                                                             </span>
                                                             <Badge variant="outline" className={cn('text-[9px] px-1.5', getPriorityColor(task.priority))}>
                                                                 {task.priority}
                                                             </Badge>
-                                                            <span className="text-[10px] text-gray-400">by {task.assignedBy}</span>
+                                                            <span className="text-[10px] text-muted-foreground">by {task.assignedBy}</span>
                                                         </div>
                                                     </div>
-                                                    <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-blue-400 transition-colors flex-shrink-0 mt-1" />
+                                                    <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 mt-1" />
                                                 </div>
                                             </div>
                                         ))
@@ -293,23 +291,26 @@ export default function BackOfficeDashboard() {
                     {/* Right Column */}
                     <div className="space-y-6">
                         {/* Recent Activity */}
-                        <Card className="border-0 shadow-lg bg-white/90 backdrop-blur">
-                            <CardHeader className="pb-3">
+                        <Card className="border shadow-md bg-card">
+                            <CardHeader className="pb-3 border-b bg-muted/20">
                                 <CardTitle className="text-base flex items-center gap-2">
                                     <TrendingUp className="h-4 w-4 text-purple-600" />
                                     Recent Activity
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent>
-                                <div className="space-y-3">
+                            <CardContent className="pt-4">
+                                <div className="space-y-4">
                                     {RECENT_ACTIVITY.map(activity => (
-                                        <div key={activity.id} className="flex items-start gap-3">
-                                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 flex-shrink-0 mt-0.5">
+                                        <div key={activity.id} className="flex items-start gap-3 relative">
+                                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted flex-shrink-0 mt-0.5 z-10 relative">
                                                 {getActivityIcon(activity.type)}
                                             </div>
+                                            {/* Connecting line */}
+                                            <div className="absolute left-4 top-8 bottom-[-16px] w-px bg-border last:hidden" />
+
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-sm text-gray-900">{activity.action}</p>
-                                                <p className="text-xs text-gray-500">{activity.client} · {activity.time}</p>
+                                                <p className="text-sm font-medium text-foreground">{activity.action}</p>
+                                                <p className="text-xs text-muted-foreground">{activity.client} · {activity.time}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -318,29 +319,31 @@ export default function BackOfficeDashboard() {
                         </Card>
 
                         {/* Quick Stats Summary */}
-                        <Card className="border-0 shadow-lg bg-gradient-to-br from-slate-800 via-slate-900 to-blue-900 text-white overflow-hidden relative">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl" />
+                        <Card className="border-0 shadow-lg bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white overflow-hidden relative">
+                            <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl -mr-10 -mt-10" />
+                            <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl -ml-10 -mb-10" />
+
                             <CardContent className="py-6 relative z-10">
-                                <h3 className="font-bold text-sm mb-4 text-slate-200">Today&apos;s Summary</h3>
-                                <div className="space-y-3">
+                                <h3 className="font-bold text-sm mb-5 text-indigo-200 uppercase tracking-wider">Today&apos;s Summary</h3>
+                                <div className="space-y-4">
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm text-slate-300">Documents Verified</span>
-                                        <span className="font-bold text-lg">7</span>
+                                        <span className="font-bold text-xl">7</span>
                                     </div>
                                     <div className="h-px bg-white/10" />
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm text-slate-300">KYC Entries Done</span>
-                                        <span className="font-bold text-lg">3</span>
+                                        <span className="font-bold text-xl">3</span>
                                     </div>
                                     <div className="h-px bg-white/10" />
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm text-slate-300">Follow-ups Sent</span>
-                                        <span className="font-bold text-lg">2</span>
+                                        <span className="font-bold text-xl">2</span>
                                     </div>
                                     <div className="h-px bg-white/10" />
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm text-slate-300">Avg. Task Time</span>
-                                        <span className="font-bold text-lg">12m</span>
+                                        <span className="font-bold text-xl">12m</span>
                                     </div>
                                 </div>
                             </CardContent>
@@ -348,6 +351,6 @@ export default function BackOfficeDashboard() {
                     </div>
                 </div>
             </motion.div>
-        </AppLayout >
+        </ConsoleLayout >
     );
 }

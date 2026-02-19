@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { AppLayout } from "@/components/layout/AppLayout";
+import { ConsoleLayout } from "@/components/layout/ConsoleLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -140,24 +140,24 @@ export default function AdminClientsPage() {
   }
 
   return (
-    <AppLayout>
-      <div className="space-y-6">
+    <ConsoleLayout>
+      <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto space-y-8 pb-8">
         {/* Header */}
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Client Management</h1>
-            <p className="text-muted-foreground mt-1">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Client Management</h1>
+            <p className="text-muted-foreground mt-1 text-lg">
               Manage all client accounts and relationships
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button className="gap-2" onClick={() => setInviteDialogOpen(true)}>
+          <div className="flex gap-2 w-full md:w-auto">
+            <Button className="gap-2 flex-1 md:flex-none" onClick={() => setInviteDialogOpen(true)}>
               <Mail className="h-4 w-4" />
               Invite Client
             </Button>
             <Button
               variant="outline"
-              className="gap-2"
+              className="gap-2 flex-1 md:flex-none"
               onClick={() => setCreateDialogOpen(true)}
             >
               <UserPlus className="h-4 w-4" />
@@ -212,7 +212,7 @@ export default function AdminClientsPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                    className="pl-10"
+                    className="pl-10 h-10"
                   />
                 </div>
                 <Button onClick={handleSearch} variant="secondary">
@@ -227,7 +227,7 @@ export default function AdminClientsPage() {
                     setFilters({ ...filters, status: value === "all" ? undefined : value as ClientStatus })
                   }
                 >
-                  <SelectTrigger className="w-[140px]">
+                  <SelectTrigger className="w-[140px] h-10">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -246,7 +246,7 @@ export default function AdminClientsPage() {
                     setFilters({ ...filters, tier: value === "all" ? undefined : value as ClientTier })
                   }
                 >
-                  <SelectTrigger className="w-[140px]">
+                  <SelectTrigger className="w-[140px] h-10">
                     <SelectValue placeholder="Tier" />
                   </SelectTrigger>
                   <SelectContent>
@@ -263,10 +263,10 @@ export default function AdminClientsPage() {
         </Card>
 
         {/* Clients Table */}
-        <Card className="rounded-xl border shadow-sm">
+        <Card className="rounded-xl border shadow-sm overflow-hidden">
           <CardContent className="p-0">
             <Table>
-              <TableHeader>
+              <TableHeader className="bg-muted/40">
                 <TableRow>
                   <TableHead>Client Name</TableHead>
                   <TableHead>Contact</TableHead>
@@ -281,7 +281,7 @@ export default function AdminClientsPage() {
               <TableBody>
                 {clients.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
                       No clients found. Add your first client to get started.
                     </TableCell>
                   </TableRow>
@@ -291,21 +291,21 @@ export default function AdminClientsPage() {
                     const tierBadge = getTierBadge(client.tier);
 
                     return (
-                      <TableRow key={client.id} className="cursor-pointer hover:bg-muted/50">
+                      <TableRow key={client.id} className="cursor-pointer hover:bg-muted/50 transition-colors">
                         <TableCell>
-                          <div className="font-medium">{client.name}</div>
+                          <div className="font-semibold text-foreground">{client.name}</div>
                           <div className="text-sm text-muted-foreground">
                             {client.primary_contact_name}
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col gap-1 text-sm">
-                            <div className="flex items-center gap-1 text-muted-foreground">
-                              <Mail className="h-3 w-3" />
+                            <div className="flex items-center gap-1.5 text-muted-foreground">
+                              <Mail className="h-3.5 w-3.5" />
                               {client.primary_contact_email}
                             </div>
-                            <div className="flex items-center gap-1 text-muted-foreground">
-                              <Phone className="h-3 w-3" />
+                            <div className="flex items-center gap-1.5 text-muted-foreground">
+                              <Phone className="h-3.5 w-3.5" />
                               {client.primary_contact_phone}
                             </div>
                           </div>
@@ -331,18 +331,18 @@ export default function AdminClientsPage() {
                         </TableCell>
                         <TableCell>
                           {client.assigned_rm_name ? (
-                            <div className="text-sm">{client.assigned_rm_name}</div>
+                            <div className="text-sm font-medium">{client.assigned_rm_name}</div>
                           ) : (
-                            <span className="text-sm text-muted-foreground">Unassigned</span>
+                            <span className="text-sm text-muted-foreground italic">Unassigned</span>
                           )}
                         </TableCell>
-                        <TableCell className="text-right font-medium">
+                        <TableCell className="text-right font-semibold text-foreground">
                           {formatCurrency(client.total_aum)}
                         </TableCell>
                         <TableCell className="text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                                 <MoreVertical className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -397,6 +397,6 @@ export default function AdminClientsPage() {
         client={selectedClient}
         onSuccess={loadClients}
       />
-    </AppLayout>
+    </ConsoleLayout>
   );
 }

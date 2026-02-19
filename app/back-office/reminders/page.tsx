@@ -4,7 +4,7 @@
 // Back Office reminders page — reuses existing reminder components
 
 import { useState, useEffect } from 'react';
-import { AppLayout } from '@/components/layout/AppLayout';
+import { ConsoleLayout } from '@/components/layout/ConsoleLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { StatCard } from '@/components/dashboard/StatCard';
@@ -17,6 +17,7 @@ import { ReminderAutomationService } from '@/lib/services/reminder-automation-se
 import { useAuth } from '@/context/AuthContext';
 import { Plus, Bell, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 export default function BackOfficeRemindersPage() {
     const { user } = useAuth();
@@ -100,63 +101,70 @@ export default function BackOfficeRemindersPage() {
     const stats = user ? ReminderService.getStats(user.id) : null;
 
     return (
-        <AppLayout>
-            <div className="p-6 space-y-6">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Reminders</h1>
-                        <p className="text-muted-foreground text-sm">Manage your task reminders and follow-ups</p>
+        <ConsoleLayout>
+            <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto space-y-8 pb-8">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="space-y-8"
+                >
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Reminders</h1>
+                            <p className="text-muted-foreground mt-2 text-lg">Manage your task reminders and follow-ups</p>
+                        </div>
+                        <Button onClick={() => setIsCreateDialogOpen(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md">
+                            <Plus className="h-4 w-4 mr-2" />
+                            New Reminder
+                        </Button>
                     </div>
-                    <Button onClick={() => setIsCreateDialogOpen(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        New Reminder
-                    </Button>
-                </div>
 
-                {/* Stats */}
-                {stats && (
-                    <div className="grid gap-6 md:grid-cols-4">
-                        <StatCard title="Overdue" value={stats.overdue} description="Needs attention" icon={AlertTriangle} iconClassName="text-red-600" />
-                        <StatCard title="Due Today" value={stats.due_today} description="Today's tasks" icon={Clock} iconClassName="text-yellow-600" />
-                        <StatCard title="Due This Week" value={stats.due_this_week} description="Upcoming" icon={Bell} iconClassName="text-blue-600" />
-                        <StatCard title="Completed" value={stats.completed_this_month} description="This month" icon={CheckCircle} iconClassName="text-green-600" />
-                    </div>
-                )}
+                    {/* Stats */}
+                    {stats && (
+                        <div className="grid gap-6 md:grid-cols-4">
+                            <StatCard title="Overdue" value={stats.overdue} description="Needs attention" icon={AlertTriangle} iconClassName="text-red-600" />
+                            <StatCard title="Due Today" value={stats.due_today} description="Today's tasks" icon={Clock} iconClassName="text-yellow-600" />
+                            <StatCard title="Due This Week" value={stats.due_this_week} description="Upcoming" icon={Bell} iconClassName="text-blue-600" />
+                            <StatCard title="Completed" value={stats.completed_this_month} description="This month" icon={CheckCircle} iconClassName="text-green-600" />
+                        </div>
+                    )}
 
-                {/* Reminder List */}
-                <Card className="rounded-xl border shadow-sm">
-                    <CardHeader>
-                        <CardTitle>My Reminders</CardTitle>
-                        <CardDescription>All reminders organized by status</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <ReminderList
-                            key={refreshKey}
-                            userId={user?.id}
-                            onComplete={handleCompleteReminder}
-                            onSnooze={handleOpenSnooze}
-                            onDelete={handleDeleteReminder}
-                            showFilters={true}
-                        />
-                    </CardContent>
-                </Card>
+                    {/* Reminder List */}
+                    <Card className="rounded-xl border shadow-sm bg-card">
+                        <CardHeader>
+                            <CardTitle>My Reminders</CardTitle>
+                            <CardDescription>All reminders organized by status</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <ReminderList
+                                key={refreshKey}
+                                userId={user?.id}
+                                onComplete={handleCompleteReminder}
+                                onSnooze={handleOpenSnooze}
+                                onDelete={handleDeleteReminder}
+                                showFilters={true}
+                            />
+                        </CardContent>
+                    </Card>
 
-                {/* Create Dialog */}
-                <ReminderDialog
-                    open={isCreateDialogOpen}
-                    onOpenChange={setIsCreateDialogOpen}
-                    onSave={handleCreateReminder}
-                />
+                    {/* Create Dialog */}
+                    <ReminderDialog
+                        open={isCreateDialogOpen}
+                        onOpenChange={setIsCreateDialogOpen}
+                        onSave={handleCreateReminder}
+                    />
 
-                {/* Snooze Dialog */}
-                <ReminderSnoozeDialog
-                    open={isSnoozeDialogOpen}
-                    onOpenChange={setIsSnoozeDialogOpen}
-                    reminder={selectedReminder}
-                    onSnooze={handleSnoozeReminder}
-                />
+                    {/* Snooze Dialog */}
+                    <ReminderSnoozeDialog
+                        open={isSnoozeDialogOpen}
+                        onOpenChange={setIsSnoozeDialogOpen}
+                        reminder={selectedReminder}
+                        onSnooze={handleSnoozeReminder}
+                    />
+                </motion.div>
             </div>
-        </AppLayout>
+        </ConsoleLayout>
     );
 }

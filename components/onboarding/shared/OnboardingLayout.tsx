@@ -2,10 +2,23 @@
 
 // components/onboarding/shared/OnboardingLayout.tsx
 // Split-screen layout: branded left panel + form right panel
-// Now supports dynamic step labels from invitation config
+// Premium design with blue-indigo gradients, glassmorphism, and refined stepper
 
 import { ReactNode } from 'react';
-import { Building2, CheckCircle2, Sparkles, Shield, Users, Target, Upload, FileText, TrendingUp, Receipt, Leaf, Umbrella } from 'lucide-react';
+import {
+    Building2,
+    CheckCircle2,
+    Sparkles,
+    Shield,
+    Users,
+    Target,
+    Upload,
+    FileText,
+    TrendingUp,
+    Receipt,
+    Leaf,
+    Umbrella,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface StepDef {
@@ -15,7 +28,6 @@ interface StepDef {
     leftDescription: string;
 }
 
-// Default fallback for steps
 const DEFAULT_STEP_DEF: StepDef = {
     label: 'Onboarding',
     subtitle: 'Complete your profile',
@@ -23,7 +35,6 @@ const DEFAULT_STEP_DEF: StepDef = {
     leftDescription: 'Follow the steps to complete your onboarding.',
 };
 
-// Icon mapping for left panel highlights
 const STEP_HIGHLIGHTS: Record<string, { icon: ReactNode; text: string }[]> = {
     basic_info: [
         { icon: <CheckCircle2 className="h-4 w-4" />, text: 'Quick & secure setup' },
@@ -93,124 +104,169 @@ export function OnboardingLayout({
 }: OnboardingLayoutProps) {
     const step = stepDef || DEFAULT_STEP_DEF;
     const progress = (currentStep / totalSteps) * 100;
-    const highlights = STEP_HIGHLIGHTS[(stepDef as StepDef & { type?: string })?.type || 'basic_info'] || STEP_HIGHLIGHTS.basic_info;
+    const highlights =
+        STEP_HIGHLIGHTS[(stepDef as StepDef & { type?: string })?.type || 'basic_info'] ||
+        STEP_HIGHLIGHTS.basic_info;
 
     return (
-        <div className="flex min-h-screen bg-slate-50">
-            {/* Left Panel — desktop only */}
-            <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] flex-shrink-0 flex-col justify-between bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 text-white p-10 relative overflow-hidden">
-                {/* Background glow effects */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="flex min-h-screen bg-white font-sans selection:bg-blue-100 selection:text-blue-900">
+            {/* ───── Left Panel (desktop) ───── */}
+            <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] flex-shrink-0 flex-col justify-between relative overflow-hidden">
+                {/* Gradient BG */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-700 to-slate-900 z-0" />
 
-                {/* Top: Logo */}
-                <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-12">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 backdrop-blur">
-                            <Building2 className="h-5 w-5 text-white" />
-                        </div>
-                        <span className="text-xl font-bold tracking-tight">NRP</span>
-                    </div>
+                {/* Glow orbs */}
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-[80px] translate-y-1/3 -translate-x-1/3" />
 
-                    {/* Greeting */}
-                    {userName && (
-                        <p className="text-blue-200 text-sm mb-2">Hello, {userName}!</p>
-                    )}
-                    <h2 className="text-3xl font-bold mb-3 leading-tight">{step.leftHeading}</h2>
-                    <p className="text-slate-300 text-sm leading-relaxed mb-8">{step.leftDescription}</p>
-
-                    {/* Highlights */}
-                    <div className="space-y-3">
-                        {highlights.map((h, i) => (
-                            <div key={i} className="flex items-center gap-3 text-slate-200">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
-                                    {h.icon}
-                                </div>
-                                <span className="text-sm">{h.text}</span>
+                {/* Content */}
+                <div className="relative z-10 flex flex-col h-full p-12">
+                    {/* Logo */}
+                    <div>
+                        <div className="flex items-center gap-3 mb-16">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl">
+                                <Building2 className="h-6 w-6 text-white" />
                             </div>
-                        ))}
-                    </div>
-                </div>
+                            <span className="text-2xl font-bold tracking-tight text-white/90">NRP CRM</span>
+                        </div>
 
-                {/* Bottom: Steps indicator */}
-                <div className="relative z-10">
-                    {/* Dynamic step labels if available */}
-                    {stepLabels && stepLabels.length > 0 && (
-                        <div className="mb-6 space-y-1.5">
-                            {stepLabels.map((label, i) => (
-                                <div
-                                    key={i}
-                                    className={cn(
-                                        'flex items-center gap-2 text-xs transition-all',
-                                        i + 1 === currentStep
-                                            ? 'text-white font-semibold'
-                                            : i + 1 < currentStep
-                                                ? 'text-blue-300'
-                                                : 'text-slate-500'
-                                    )}
-                                >
-                                    <div className={cn(
-                                        'flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold',
-                                        i + 1 === currentStep
-                                            ? 'bg-blue-500 text-white'
-                                            : i + 1 < currentStep
-                                                ? 'bg-blue-400/30 text-blue-300'
-                                                : 'bg-white/10 text-slate-500'
-                                    )}>
-                                        {i + 1 < currentStep ? '✓' : i + 1}
+                        {/* Greeting */}
+                        <div className="space-y-4 mb-8">
+                            {userName && (
+                                <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-blue-100 text-xs font-medium">
+                                    Hello, {userName}
+                                </div>
+                            )}
+                            <h2 className="text-4xl font-extrabold leading-tight text-white tracking-tight">
+                                {step.leftHeading}
+                            </h2>
+                            <p className="text-blue-100/80 text-lg leading-relaxed max-w-sm">
+                                {step.leftDescription}
+                            </p>
+                        </div>
+
+                        {/* Highlights */}
+                        <div className="space-y-4 mt-8">
+                            {highlights.map((h, i) => (
+                                <div key={i} className="flex items-center gap-4 text-blue-50 group">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm group-hover:bg-white/10 transition-colors">
+                                        {h.icon}
                                     </div>
-                                    {label}
+                                    <span className="text-sm font-medium tracking-wide">{h.text}</span>
                                 </div>
                             ))}
                         </div>
-                    )}
-
-                    <div className="flex items-center gap-2 mb-4">
-                        {Array.from({ length: totalSteps }).map((_, i) => (
-                            <div
-                                key={i}
-                                className={cn(
-                                    'h-2 rounded-full transition-all duration-300',
-                                    i + 1 === currentStep
-                                        ? 'w-8 bg-blue-400'
-                                        : i + 1 < currentStep
-                                            ? 'w-4 bg-blue-400/60'
-                                            : 'w-4 bg-white/20'
-                                )}
-                            />
-                        ))}
                     </div>
-                    <p className="text-xs text-slate-400">Step {currentStep} of {totalSteps}</p>
+
+                    {/* Vertical stepper */}
+                    <div className="mt-auto">
+                        {stepLabels && stepLabels.length > 0 && (
+                            <div className="space-y-0 relative">
+                                {/* Connecting line */}
+                                <div className="absolute left-[15px] top-4 bottom-4 w-px bg-white/10" />
+
+                                {stepLabels.map((label, i) => {
+                                    const isActive = i + 1 === currentStep;
+                                    const isCompleted = i + 1 < currentStep;
+
+                                    return (
+                                        <div key={i} className="relative flex items-center gap-4 py-3 group">
+                                            <div
+                                                className={cn(
+                                                    'relative z-10 flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all duration-300',
+                                                    isActive
+                                                        ? 'bg-white border-white scale-110 shadow-[0_0_15px_rgba(255,255,255,0.3)]'
+                                                        : isCompleted
+                                                            ? 'bg-blue-500 border-blue-500'
+                                                            : 'bg-transparent border-white/20'
+                                                )}
+                                            >
+                                                {isActive && <div className="w-2.5 h-2.5 rounded-full bg-blue-600" />}
+                                                {isCompleted && <CheckCircle2 className="w-4 h-4 text-white" />}
+                                            </div>
+                                            <span
+                                                className={cn(
+                                                    'text-sm font-medium transition-colors duration-300',
+                                                    isActive
+                                                        ? 'text-white translate-x-1'
+                                                        : isCompleted
+                                                            ? 'text-blue-200'
+                                                            : 'text-blue-300/60'
+                                                )}
+                                            >
+                                                {label}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        <div className="mt-8 flex items-center justify-between text-xs text-blue-200/60 border-t border-white/10 pt-6">
+                            <span>Step {currentStep} of {totalSteps}</span>
+                            <span>{Math.round(progress)}% Complete</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Right Panel — form content */}
-            <div className="flex-1 flex flex-col min-h-screen">
-                {/* Progress bar */}
-                <div className="h-1 bg-slate-200">
+            {/* ───── Right Panel ───── */}
+            <div className="flex-1 flex flex-col min-h-screen bg-slate-50/50">
+                {/* Mobile header */}
+                <div className="lg:hidden px-6 pt-6 pb-2">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                            <div className="bg-blue-600 p-1.5 rounded-lg">
+                                <Building2 className="h-4 w-4 text-white" />
+                            </div>
+                            <span className="font-bold text-slate-900">NRP</span>
+                        </div>
+                        <span className="text-xs font-medium text-slate-500">
+                            Step {currentStep}/{totalSteps}
+                        </span>
+                    </div>
+                    <div className="h-1 bg-slate-200 rounded-full overflow-hidden">
+                        <div
+                            className="h-full bg-blue-600 transition-all duration-500 ease-out"
+                            style={{ width: `${progress}%` }}
+                        />
+                    </div>
+                </div>
+
+                {/* Desktop progress bar */}
+                <div className="hidden lg:block h-1.5 bg-slate-100">
                     <div
-                        className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500 ease-out"
+                        className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500 ease-out"
                         style={{ width: `${progress}%` }}
                     />
                 </div>
 
-                {/* Header */}
-                <div className="px-6 sm:px-10 pt-8 pb-4">
-                    <p className="text-sm text-blue-600 font-medium mb-1">
-                        Step {currentStep} of {totalSteps}
-                    </p>
-                    <h1 className="text-2xl font-bold text-gray-900">{step.label}</h1>
-                    <p className="text-gray-500 text-sm mt-1">{step.subtitle}</p>
+                {/* Main content */}
+                <div className="flex-1 overflow-y-auto">
+                    <div className="max-w-3xl mx-auto w-full px-6 py-8 lg:py-12">
+                        {/* Form header */}
+                        <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <p className="text-sm text-blue-600 font-semibold mb-1.5 tracking-wide">
+                                Step {currentStep} of {totalSteps}
+                            </p>
+                            <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">
+                                {step.label}
+                            </h1>
+                            <p className="text-slate-500 text-lg">{step.subtitle}</p>
+                        </div>
+
+                        {/* Form content */}
+                        <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
+                            {children}
+                        </div>
+                    </div>
                 </div>
 
-                {/* Form content */}
-                <div className="flex-1 px-6 sm:px-10 overflow-y-auto">
-                    {children}
-                </div>
-
-                {/* Navigation */}
-                <div className="px-6 sm:px-10 py-4 border-t bg-white/80 backdrop-blur sticky bottom-0">
-                    {navigation}
+                {/* Sticky navigation footer */}
+                <div className="border-t border-slate-200 bg-white/80 backdrop-blur-md sticky bottom-0 z-20">
+                    <div className="max-w-3xl mx-auto w-full px-6 py-4">
+                        {navigation}
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
 // app/admin/onboarding/invite/page.tsx
 // Admin version of the invitation creation wizard — reuses the RM onboarding page logic
 
-import { useState, useMemo } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import { AppLayout } from '@/components/layout/AppLayout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
+import { useState, useMemo } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { ConsoleLayout } from "@/components/layout/ConsoleLayout";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import {
     UserPlus, Send, Copy, Check, Loader2, ExternalLink,
     ArrowRight, ArrowLeft, ClipboardList, FileCheck, BookOpen,
@@ -21,17 +21,17 @@ import {
     Camera, Scale, UserCheck, AlertTriangle, Fingerprint,
     Sparkles, CheckCircle2, ChevronRight, Clock, Mail, Phone,
     Settings2, Eye, Zap,
-} from 'lucide-react';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+} from "lucide-react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     QUESTIONNAIRE_POOL, DOCUMENT_POOL, SERVICE_TYPE_CONFIG,
     getDefaultQuestionnaires, getDefaultDocuments,
     type ServiceType, type InvitationConfig,
-} from '@/lib/config/onboarding-config';
+} from "@/lib/config/onboarding-config";
 import {
     createInvitation, getAllInvitations,
-} from '@/lib/services/onboarding-service';
+} from "@/lib/services/onboarding-service";
 
 // ─── Icon Map ────────────────────────────────────────────────
 const ICON_MAP: Record<string, React.ReactNode> = {
@@ -56,10 +56,10 @@ const ICON_MAP: Record<string, React.ReactNode> = {
 };
 
 const WIZARD_STEPS = [
-    { id: 1, label: 'Client Details', icon: <UserPlus className="h-4 w-4" /> },
-    { id: 2, label: 'Questionnaires', icon: <ClipboardList className="h-4 w-4" /> },
-    { id: 3, label: 'Documents', icon: <FileCheck className="h-4 w-4" /> },
-    { id: 4, label: 'Review & Send', icon: <Send className="h-4 w-4" /> },
+    { id: 1, label: "Client Details", icon: <UserPlus className="h-4 w-4" /> },
+    { id: 2, label: "Questionnaires", icon: <ClipboardList className="h-4 w-4" /> },
+    { id: 3, label: "Documents", icon: <FileCheck className="h-4 w-4" /> },
+    { id: 4, label: "Review & Send", icon: <Send className="h-4 w-4" /> },
 ];
 
 export default function AdminOnboardingInvitePage() {
@@ -70,19 +70,19 @@ export default function AdminOnboardingInvitePage() {
     const [copied, setCopied] = useState(false);
 
     // Step 1 state
-    const [clientName, setClientName] = useState('');
-    const [clientEmail, setClientEmail] = useState('');
-    const [clientPhone, setClientPhone] = useState('');
-    const [serviceType, setServiceType] = useState<ServiceType>('nrp_360');
+    const [clientName, setClientName] = useState("");
+    const [clientEmail, setClientEmail] = useState("");
+    const [clientPhone, setClientPhone] = useState("");
+    const [serviceType, setServiceType] = useState<ServiceType>("nrp_360");
 
     // Step 2 state
     const [selectedQuestionnaires, setSelectedQuestionnaires] = useState<string[]>(
-        () => getDefaultQuestionnaires('nrp_360')
+        () => getDefaultQuestionnaires("nrp_360")
     );
 
     // Step 3 state
     const [selectedDocuments, setSelectedDocuments] = useState<string[]>(
-        () => getDefaultDocuments('nrp_360')
+        () => getDefaultDocuments("nrp_360")
     );
 
     // Handlers
@@ -122,13 +122,13 @@ export default function AdminOnboardingInvitePage() {
                 clientName, clientEmail, clientPhone, serviceType,
                 selectedQuestionnaires, selectedDocuments,
                 includeFamilyMembers: true,
-                createdBy: user?.id || 'admin',
+                createdBy: user?.id || "admin",
             });
             const link = `${window.location.origin}/client/onboarding/${config.token}`;
             setGeneratedLink(link);
-            toast.success('Invitation created successfully!');
+            toast.success("Invitation created successfully!");
         } catch {
-            toast.error('Failed to create invitation');
+            toast.error("Failed to create invitation");
         } finally {
             setSending(false);
         }
@@ -138,47 +138,48 @@ export default function AdminOnboardingInvitePage() {
         if (!generatedLink) return;
         navigator.clipboard.writeText(generatedLink);
         setCopied(true);
-        toast.success('Link copied to clipboard');
+        toast.success("Link copied to clipboard");
         setTimeout(() => setCopied(false), 2000);
     };
 
     return (
-        <AppLayout>
-            <div className="p-6 max-w-5xl mx-auto space-y-6">
+        <ConsoleLayout>
+            <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto space-y-8 pb-8">
                 {/* Header */}
                 <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-                    <div className="flex items-center gap-3 mb-1">
-                        <div className="p-2 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 text-white">
-                            <UserPlus className="h-5 w-5" />
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Create Client Invitation</h1>
+                            <div className="flex items-center gap-2 mt-2">
+                                <Badge variant="outline" className="text-xs border-primary/20 text-primary bg-primary/5">Admin Mode</Badge>
+                                <p className="text-muted-foreground text-lg">
+                                    Configure onboarding steps and send invitation link to new client
+                                </p>
+                            </div>
                         </div>
-                        <h1 className="text-2xl font-bold">Create Client Invitation</h1>
-                        <Badge variant="outline" className="ml-2 text-xs">Admin</Badge>
                     </div>
-                    <p className="text-muted-foreground text-sm ml-12">
-                        Configure onboarding steps and send invitation link to new client
-                    </p>
                 </motion.div>
 
                 {/* Step Indicator */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 overflow-x-auto pb-2">
                     {WIZARD_STEPS.map((s, i) => (
-                        <div key={s.id} className="flex items-center gap-2">
+                        <div key={s.id} className="flex items-center gap-2 min-w-fit">
                             <button
                                 onClick={() => s.id < step && setStep(s.id)}
                                 className={cn(
-                                    'flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                                    "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all shadow-sm",
                                     step === s.id
-                                        ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-md'
+                                        ? "bg-primary text-primary-foreground shadow-md ring-2 ring-primary/20"
                                         : s.id < step
-                                            ? 'bg-green-100 text-green-700 cursor-pointer hover:bg-green-200'
-                                            : 'bg-gray-100 text-gray-400'
+                                            ? "bg-secondary text-secondary-foreground cursor-pointer hover:bg-secondary/80"
+                                            : "bg-muted text-muted-foreground cursor-not-allowed opacity-70"
                                 )}
                             >
                                 {s.id < step ? <CheckCircle2 className="h-4 w-4" /> : s.icon}
                                 <span className="hidden sm:inline">{s.label}</span>
                             </button>
                             {i < WIZARD_STEPS.length - 1 && (
-                                <ChevronRight className="h-4 w-4 text-gray-300" />
+                                <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
                             )}
                         </div>
                     ))}
@@ -195,44 +196,47 @@ export default function AdminOnboardingInvitePage() {
                     >
                         {/* Step 1: Client Details */}
                         {step === 1 && (
-                            <Card className="rounded-2xl shadow-lg border-0 bg-white">
+                            <Card className="rounded-xl shadow-sm border bg-card">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
-                                        <UserPlus className="h-5 w-5 text-red-500" /> Client Details
+                                        <UserPlus className="h-5 w-5 text-primary" /> Client Details
                                     </CardTitle>
-                                    <CardDescription>Enter the client's information and select service type</CardDescription>
+                                    <CardDescription>Enter the client&apos;s information and select service type</CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <Label className="flex items-center gap-2"><UserPlus className="h-4 w-4 text-gray-400" />Full Name *</Label>
-                                            <Input value={clientName} onChange={e => setClientName(e.target.value)} placeholder="e.g. Rajesh Sharma" className="rounded-xl h-11" />
+                                            <Label className="flex items-center gap-2">Full Name *</Label>
+                                            <Input value={clientName} onChange={e => setClientName(e.target.value)} placeholder="e.g. Rajesh Sharma" className="h-11" />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label className="flex items-center gap-2"><Mail className="h-4 w-4 text-gray-400" />Email *</Label>
-                                            <Input type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder="client@email.com" className="rounded-xl h-11" />
+                                            <Label className="flex items-center gap-2">Email *</Label>
+                                            <Input type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder="client@email.com" className="h-11" />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label className="flex items-center gap-2"><Phone className="h-4 w-4 text-gray-400" />Phone</Label>
-                                            <Input type="tel" value={clientPhone} onChange={e => setClientPhone(e.target.value)} placeholder="+91 98765 43210" className="rounded-xl h-11" />
+                                            <Label className="flex items-center gap-2">Phone</Label>
+                                            <Input type="tel" value={clientPhone} onChange={e => setClientPhone(e.target.value)} placeholder="+91 98765 43210" className="h-11" />
                                         </div>
                                     </div>
 
                                     <div className="space-y-3">
-                                        <Label className="flex items-center gap-2"><Settings2 className="h-4 w-4 text-gray-400" />Service Type</Label>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <Label className="flex items-center gap-2">Service Type</Label>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             {(Object.entries(SERVICE_TYPE_CONFIG) as [ServiceType, typeof SERVICE_TYPE_CONFIG[ServiceType]][]).map(([key, config]) => (
                                                 <button
                                                     key={key}
                                                     onClick={() => handleServiceTypeChange(key)}
                                                     className={cn(
-                                                        'p-4 rounded-xl border-2 text-left transition-all',
+                                                        "p-4 rounded-xl border-2 text-left transition-all",
                                                         serviceType === key
-                                                            ? 'border-red-500 bg-red-50 shadow-md'
-                                                            : 'border-gray-200 hover:border-gray-300'
+                                                            ? "border-primary bg-primary/5 shadow-sm ring-1 ring-primary/10"
+                                                            : "border-input hover:border-accent hover:bg-accent/50"
                                                     )}
                                                 >
-                                                    <p className="font-semibold">{config.name}</p>
+                                                    <div className="flex justify-between items-start">
+                                                        <p className="font-semibold">{config.name}</p>
+                                                        {serviceType === key && <CheckCircle2 className="h-4 w-4 text-primary" />}
+                                                    </div>
                                                     <p className="text-xs text-muted-foreground mt-1">{config.description}</p>
                                                 </button>
                                             ))}
@@ -244,39 +248,39 @@ export default function AdminOnboardingInvitePage() {
 
                         {/* Step 2: Questionnaires */}
                         {step === 2 && (
-                            <Card className="rounded-2xl shadow-lg border-0 bg-white">
+                            <Card className="rounded-xl shadow-sm border bg-card">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
-                                        <ClipboardList className="h-5 w-5 text-red-500" /> Select Questionnaires
+                                        <ClipboardList className="h-5 w-5 text-primary" /> Select Questionnaires
                                     </CardTitle>
                                     <CardDescription>Choose which questionnaires the client will complete</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {QUESTIONNAIRE_POOL.map(q => (
                                             <button
                                                 key={q.id}
                                                 onClick={() => toggleQuestionnaire(q.id)}
                                                 className={cn(
-                                                    'p-4 rounded-xl border-2 text-left transition-all',
+                                                    "p-4 rounded-xl border-2 text-left transition-all",
                                                     selectedQuestionnaires.includes(q.id)
-                                                        ? 'border-red-500 bg-red-50 shadow-md'
-                                                        : 'border-gray-200 hover:border-gray-300'
+                                                        ? "border-primary bg-primary/5 shadow-sm ring-1 ring-primary/10"
+                                                        : "border-input hover:border-accent hover:bg-accent/50"
                                                 )}
                                             >
-                                                <div className="flex items-start gap-3">
-                                                    <div className={cn('p-2 rounded-lg', selectedQuestionnaires.includes(q.id) ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500')}>
+                                                <div className="flex items-start gap-4">
+                                                    <div className={cn("p-2 rounded-lg", selectedQuestionnaires.includes(q.id) ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground")}>
                                                         {ICON_MAP[q.icon] || <ClipboardList className="h-5 w-5" />}
                                                     </div>
                                                     <div className="flex-1">
                                                         <p className="font-semibold text-sm">{q.name}</p>
                                                         <p className="text-xs text-muted-foreground mt-1">{q.description}</p>
                                                         <div className="flex gap-2 mt-2">
-                                                            <Badge variant="secondary" className="text-xs">{q.questionCount} questions</Badge>
-                                                            <Badge variant="secondary" className="text-xs">~{q.estimatedMinutes} min</Badge>
+                                                            <Badge variant="secondary" className="text-xs font-normal">{q.questionCount} questions</Badge>
+                                                            <Badge variant="secondary" className="text-xs font-normal">~{q.estimatedMinutes} min</Badge>
                                                         </div>
                                                     </div>
-                                                    {selectedQuestionnaires.includes(q.id) && <CheckCircle2 className="h-5 w-5 text-red-500 flex-shrink-0" />}
+                                                    {selectedQuestionnaires.includes(q.id) && <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />}
                                                 </div>
                                             </button>
                                         ))}
@@ -287,37 +291,37 @@ export default function AdminOnboardingInvitePage() {
 
                         {/* Step 3: Documents */}
                         {step === 3 && (
-                            <Card className="rounded-2xl shadow-lg border-0 bg-white">
+                            <Card className="rounded-xl shadow-sm border bg-card">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
-                                        <FileCheck className="h-5 w-5 text-red-500" /> Required Documents
+                                        <FileCheck className="h-5 w-5 text-primary" /> Required Documents
                                     </CardTitle>
                                     <CardDescription>Select which documents the client must upload</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                         {DOCUMENT_POOL.map(doc => (
                                             <button
                                                 key={doc.id}
                                                 onClick={() => toggleDocument(doc.id)}
                                                 disabled={doc.isMandatory}
                                                 className={cn(
-                                                    'p-3 rounded-xl border-2 text-left transition-all',
+                                                    "p-3 rounded-xl border-2 text-left transition-all relative",
                                                     selectedDocuments.includes(doc.id)
-                                                        ? 'border-red-500 bg-red-50'
-                                                        : 'border-gray-200 hover:border-gray-300',
-                                                    doc.isMandatory && 'opacity-90 cursor-not-allowed'
+                                                        ? "border-primary bg-primary/5 shadow-sm"
+                                                        : "border-input hover:border-accent hover:bg-accent/50",
+                                                    doc.isMandatory && "opacity-90 cursor-not-allowed bg-muted/20"
                                                 )}
                                             >
-                                                <div className="flex items-center gap-2">
-                                                    <div className={cn('p-1.5 rounded-lg', selectedDocuments.includes(doc.id) ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500')}>
+                                                <div className="flex items-center gap-3">
+                                                    <div className={cn("p-1.5 rounded-lg", selectedDocuments.includes(doc.id) ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground")}>
                                                         {ICON_MAP[doc.icon] || <FileText className="h-4 w-4" />}
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <p className="font-medium text-sm truncate">{doc.name}</p>
-                                                        {doc.isMandatory && <Badge className="text-[10px] bg-red-500 text-white mt-1">Mandatory</Badge>}
+                                                        {doc.isMandatory && <Badge className="text-[10px] bg-red-500/10 text-red-600 border-red-500/20 mt-1 hover:bg-red-500/20">Mandatory</Badge>}
                                                     </div>
-                                                    {selectedDocuments.includes(doc.id) && <CheckCircle2 className="h-4 w-4 text-red-500 flex-shrink-0" />}
+                                                    {selectedDocuments.includes(doc.id) && <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />}
                                                 </div>
                                             </button>
                                         ))}
@@ -328,62 +332,62 @@ export default function AdminOnboardingInvitePage() {
 
                         {/* Step 4: Review & Send */}
                         {step === 4 && (
-                            <Card className="rounded-2xl shadow-lg border-0 bg-white">
+                            <Card className="rounded-xl shadow-sm border bg-card">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
-                                        <Eye className="h-5 w-5 text-red-500" /> Review & Send
+                                        <Eye className="h-5 w-5 text-primary" /> Review & Send
                                     </CardTitle>
                                     <CardDescription>Review the invitation details before sending</CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-3">
-                                            <h4 className="font-semibold text-sm text-gray-500 uppercase tracking-wider">Client</h4>
-                                            <div className="p-4 rounded-xl bg-gray-50 space-y-2">
-                                                <p className="font-semibold">{clientName || '—'}</p>
-                                                <p className="text-sm text-muted-foreground">{clientEmail || '—'}</p>
+                                            <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Client</h4>
+                                            <div className="p-4 rounded-xl bg-muted/30 border space-y-2">
+                                                <p className="font-semibold">{clientName || "—"}</p>
+                                                <p className="text-sm text-muted-foreground">{clientEmail || "—"}</p>
                                                 {clientPhone && <p className="text-sm text-muted-foreground">{clientPhone}</p>}
-                                                <Badge variant="outline">{SERVICE_TYPE_CONFIG[serviceType].name}</Badge>
+                                                <Badge variant="outline" className="bg-background">{SERVICE_TYPE_CONFIG[serviceType].name}</Badge>
                                             </div>
                                         </div>
                                         <div className="space-y-3">
-                                            <h4 className="font-semibold text-sm text-gray-500 uppercase tracking-wider">Questionnaires ({selectedQuestionnaires.length})</h4>
-                                            <div className="space-y-1.5">
+                                            <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Questionnaires ({selectedQuestionnaires.length})</h4>
+                                            <div className="space-y-2">
                                                 {selectedQuestionnaires.map(id => {
                                                     const q = QUESTIONNAIRE_POOL.find(x => x.id === id);
-                                                    return q ? <div key={id} className="flex items-center gap-2 text-sm"><CheckCircle2 className="h-4 w-4 text-green-500" />{q.name}</div> : null;
+                                                    return q ? <div key={id} className="flex items-center gap-2 text-sm bg-muted/20 p-2 rounded-lg border border-muted/50"><CheckCircle2 className="h-4 w-4 text-green-500" />{q.name}</div> : null;
                                                 })}
                                             </div>
                                         </div>
                                     </div>
                                     <div className="space-y-3">
-                                        <h4 className="font-semibold text-sm text-gray-500 uppercase tracking-wider">Documents ({selectedDocuments.length})</h4>
+                                        <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Documents ({selectedDocuments.length})</h4>
                                         <div className="flex flex-wrap gap-2">
                                             {selectedDocuments.map(id => {
                                                 const d = DOCUMENT_POOL.find(x => x.id === id);
-                                                return d ? <Badge key={id} variant="secondary" className="text-xs">{d.name}</Badge> : null;
+                                                return d ? <Badge key={id} variant="secondary" className="text-xs py-1 px-2">{d.name}</Badge> : null;
                                             })}
                                         </div>
                                     </div>
 
                                     {generatedLink ? (
-                                        <div className="p-4 rounded-xl bg-green-50 border border-green-200 space-y-3">
-                                            <div className="flex items-center gap-2 text-green-700 font-semibold">
+                                        <div className="p-4 rounded-xl bg-green-50/50 border border-green-200 dark:bg-green-900/10 dark:border-green-800 space-y-3">
+                                            <div className="flex items-center gap-2 text-green-700 dark:text-green-400 font-semibold">
                                                 <CheckCircle2 className="h-5 w-5" /> Invitation Created!
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <Input value={generatedLink} readOnly className="flex-1 text-xs rounded-xl" />
-                                                <Button variant="outline" size="sm" onClick={copyLink}>
+                                                <Input value={generatedLink} readOnly className="flex-1 text-xs h-10 bg-background" />
+                                                <Button variant="outline" size="sm" onClick={copyLink} className="h-10">
                                                     {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                                                 </Button>
                                             </div>
-                                            <Link href={generatedLink} target="_blank" className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline">
+                                            <Link href={generatedLink} target="_blank" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
                                                 Open preview <ExternalLink className="h-3 w-3" />
                                             </Link>
                                         </div>
                                     ) : (
-                                        <Button onClick={handleSend} disabled={sending} className="w-full h-12 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-semibold">
-                                            {sending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" />Creating...</> : <><Send className="h-4 w-4 mr-2" />Create & Send Invitation</>}
+                                        <Button onClick={handleSend} disabled={sending} className="w-full h-12 text-lg shadow-md">
+                                            {sending ? <><Loader2 className="h-5 w-5 animate-spin mr-2" />Creating...</> : <><Send className="h-5 w-5 mr-2" />Create & Send Invitation</>}
                                         </Button>
                                     )}
                                 </CardContent>
@@ -394,18 +398,18 @@ export default function AdminOnboardingInvitePage() {
 
                 {/* Navigation */}
                 {!generatedLink && (
-                    <div className="flex justify-between">
-                        <Button variant="outline" onClick={() => setStep(s => s - 1)} disabled={step === 1} className="rounded-xl">
+                    <div className="flex justify-between pt-4">
+                        <Button variant="outline" onClick={() => setStep(s => s - 1)} disabled={step === 1} className="w-24">
                             <ArrowLeft className="h-4 w-4 mr-2" /> Back
                         </Button>
                         {step < 4 && (
-                            <Button onClick={() => setStep(s => s + 1)} disabled={!canProceed} className="rounded-xl bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white">
+                            <Button onClick={() => setStep(s => s + 1)} disabled={!canProceed} className="w-24 shadow-sm">
                                 Next <ArrowRight className="h-4 w-4 ml-2" />
                             </Button>
                         )}
                     </div>
                 )}
             </div>
-        </AppLayout>
+        </ConsoleLayout>
     );
 }
