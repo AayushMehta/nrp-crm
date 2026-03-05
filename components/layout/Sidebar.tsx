@@ -24,8 +24,8 @@ import { useAuth } from '@/context/AuthContext';
 const adminNavigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
   { name: 'Clients', href: '/admin/clients', icon: Users },
-  { name: 'Onboarding', href: '/admin/onboarding', icon: CheckSquare },
-  { name: 'Invite Client', href: '/admin/onboarding/invite', icon: UserPlusIcon },
+  { name: 'Tasks', href: '/admin/tasks', icon: CheckSquare },
+  { name: 'Onboarding', href: '/admin/onboarding', icon: UserPlusIcon },
   { name: 'Reminders', href: '/admin/reminders', icon: Bell },
 ];
 
@@ -33,6 +33,7 @@ const adminNavigation = [
 const rmNavigation = [
   { name: 'Dashboard', href: '/rm/dashboard', icon: LayoutDashboard },
   { name: 'My Clients', href: '/rm/clients', icon: Users },
+  { name: 'Tasks', href: '/rm/tasks', icon: CheckSquare },
   { name: 'Invite Client', href: '/rm/onboarding', icon: UserPlusIcon },
   { name: 'Reminders', href: '/rm/reminders', icon: Bell },
 ];
@@ -47,7 +48,7 @@ const clientNavigation = [
 // Back Office Navigation
 const backOfficeNavigation = [
   { name: 'Dashboard', href: '/back-office/dashboard', icon: LayoutDashboard },
-  { name: 'Tasks', href: '/back-office/tasks', icon: CheckSquare },
+  { name: 'Tasks', href: '/back-office/task-manager', icon: CheckSquare },
   { name: 'Reminders', href: '/back-office/reminders', icon: Bell },
 ];
 

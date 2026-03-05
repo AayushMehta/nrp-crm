@@ -22,6 +22,21 @@ export type TaskContextType =
   | 'meeting'
   | 'general';
 
+// Financial Operation Types — 11 predefined + Other
+export type TaskOperationType =
+  | 'sip_setup'
+  | 'sip_cancellation'
+  | 'swp_setup'
+  | 'stp_setup'
+  | 'switch_plans'
+  | 'lumpsum_investment'
+  | 'redemption'
+  | 'client_onboarding'
+  | 'kyc_update'
+  | 'bank_mandate'
+  | 'nomination_update'
+  | 'other';
+
 // Main Task Interface
 export interface Task {
   id: string;
@@ -67,6 +82,22 @@ export interface Task {
   waitingOnWhat?: string; // Required if status = 'waiting_on_client'
   documentRequested?: string; // Required if status = 'pending_document_from_client'
   clientNotifiedAt?: string; // Timestamp when client was notified
+
+  // Financial Operation Type (for the Task Manager module)
+  operation_type?: TaskOperationType;
+  custom_type_label?: string; // Free-text label when operation_type === 'other'
+
+  // Follow-up Engine
+  needs_follow_up?: boolean;  // Whether this task needs a follow-up
+  follow_up_date?: string;    // ISO 8601 — when to follow up
+  follow_up_reason?: string;  // Why follow-up is needed
+
+  // Snooze / Follow-up Engine
+  snooze_date?: string;   // ISO 8601 — when this task should resurface
+  snooze_reason?: string; // Why this task was snoozed
+  snooze_count?: number;  // How many times this task has been snoozed
+  snoozed_at?: string;    // When the snooze was last activated
+  is_follow_up_due?: boolean; // Computed flag set by resurfacing logic
 }
 
 // Task Filter Interface - for filtering task lists
@@ -110,6 +141,8 @@ export interface TaskCreateData {
   title: string;
   description?: string;
   context_type: TaskContextType;
+  operation_type?: TaskOperationType;
+  custom_type_label?: string; // When operation_type === 'other'
   family_id: string;
   assigned_to: string;
   priority: TaskPriority;
@@ -117,6 +150,10 @@ export interface TaskCreateData {
   due_time?: string;
   tags?: string[];
   notes?: string;
+  // Follow-up
+  needs_follow_up?: boolean;
+  follow_up_date?: string;
+  follow_up_reason?: string;
 }
 
 // Task Update Data - for updating existing tasks
@@ -124,6 +161,7 @@ export interface TaskUpdateData {
   title?: string;
   description?: string;
   context_type?: TaskContextType;
+  operation_type?: TaskOperationType;
   assigned_to?: string;
   priority?: TaskPriority;
   status?: TaskStatus;
@@ -135,6 +173,8 @@ export interface TaskUpdateData {
   waitingOnWhat?: string;
   documentRequested?: string;
   clientNotifiedAt?: string;
+  snooze_date?: string;
+  snooze_reason?: string;
 }
 
 // Task Assignment Change - for tracking reassignments
@@ -165,7 +205,7 @@ export interface TaskStatusChange {
 export interface TaskActivityLogEntry {
   id: string;
   task_id: string;
-  action_type: 'created' | 'updated' | 'status_changed' | 'assigned' | 'completed' | 'deleted';
+  action_type: 'created' | 'updated' | 'status_changed' | 'assigned' | 'completed' | 'deleted' | 'snoozed' | 'resurfaced';
   action_by: string;
   action_by_name: string;
   action_at: string;
@@ -219,3 +259,56 @@ export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
   blocked: 'red',
   done: 'green',
 };
+
+// ── Financial Operation Type Labels ──
+export const OPERATION_TYPE_LABELS: Record<TaskOperationType, string> = {
+  sip_setup: 'SIP Setup',
+  sip_cancellation: 'SIP Cancellation',
+  swp_setup: 'SWP Setup',
+  stp_setup: 'STP Setup',
+  switch_plans: 'Switch Plans',
+  lumpsum_investment: 'Lumpsum Investment',
+  redemption: 'Redemption',
+  client_onboarding: 'Client Onboarding',
+  kyc_update: 'KYC Update',
+  bank_mandate: 'Bank Mandate (OTM)',
+  nomination_update: 'Nomination Update',
+  other: 'Other',
+};
+
+// ── Financial Operation Type Colors (for pills/badges) ──
+export const OPERATION_TYPE_COLORS: Record<TaskOperationType, { bg: string; text: string }> = {
+  sip_setup: { bg: 'bg-emerald-100 dark:bg-emerald-900/20', text: 'text-emerald-700 dark:text-emerald-400' },
+  sip_cancellation: { bg: 'bg-red-100 dark:bg-red-900/20', text: 'text-red-700 dark:text-red-400' },
+  swp_setup: { bg: 'bg-violet-100 dark:bg-violet-900/20', text: 'text-violet-700 dark:text-violet-400' },
+  stp_setup: { bg: 'bg-sky-100 dark:bg-sky-900/20', text: 'text-sky-700 dark:text-sky-400' },
+  switch_plans: { bg: 'bg-indigo-100 dark:bg-indigo-900/20', text: 'text-indigo-700 dark:text-indigo-400' },
+  lumpsum_investment: { bg: 'bg-teal-100 dark:bg-teal-900/20', text: 'text-teal-700 dark:text-teal-400' },
+  redemption: { bg: 'bg-orange-100 dark:bg-orange-900/20', text: 'text-orange-700 dark:text-orange-400' },
+  client_onboarding: { bg: 'bg-blue-100 dark:bg-blue-900/20', text: 'text-blue-700 dark:text-blue-400' },
+  kyc_update: { bg: 'bg-amber-100 dark:bg-amber-900/20', text: 'text-amber-700 dark:text-amber-400' },
+  bank_mandate: { bg: 'bg-cyan-100 dark:bg-cyan-900/20', text: 'text-cyan-700 dark:text-cyan-400' },
+  nomination_update: { bg: 'bg-pink-100 dark:bg-pink-900/20', text: 'text-pink-700 dark:text-pink-400' },
+  other: { bg: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-700 dark:text-slate-400' },
+};
+
+// ── Snooze Reason Presets ──
+export const SNOOZE_REASONS = [
+  'Aadhar/PAN Mismatch',
+  'Awaiting Client Signature',
+  'Insufficient Funds',
+  'Client Unavailable',
+  'Waiting for Bank Mandate',
+  'Document Verification Pending',
+  'Other',
+] as const;
+
+export type SnoozeReasonPreset = (typeof SNOOZE_REASONS)[number];
+
+// ── Task Manager Stats (for "Clean Desk" dashboard metrics) ──
+export interface TaskManagerStats {
+  urgent_followups: number;       // Snoozed tasks resurfaced today
+  pending_client_action: number;  // Tasks currently snoozed/waiting
+  in_progress: number;            // Active work
+  completed_this_week: number;    // Done in the last 7 days
+}

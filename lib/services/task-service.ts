@@ -10,6 +10,8 @@ import type {
   TaskStatus,
   TaskPriority,
   TaskBoardColumn,
+  TaskManagerStats,
+  TaskActivityLogEntry,
 } from '@/types/tasks';
 import { LocalStorageService } from '@/lib/storage/localStorage';
 import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isAfter, isBefore, isToday, parseISO } from 'date-fns';
@@ -71,16 +73,19 @@ export class TaskService {
    * Create a new task
    */
   static createTask(
-    taskData: TaskCreateData,
-    currentUserId: string,
-    currentUserName: string
+    taskData: TaskCreateData & { created_by?: string; created_by_name?: string },
+    currentUserId?: string,
+    currentUserName?: string
   ): Task {
     const allTasks = this.getAllTasks();
     const now = new Date().toISOString();
 
+    const userId = taskData.created_by || currentUserId || 'system';
+    const userName = taskData.created_by_name || currentUserName || 'System';
+
     // Find assigned user name (would come from user service in real app)
-    const assignedToName = taskData.assigned_to === currentUserId
-      ? currentUserName
+    const assignedToName = taskData.assigned_to === userId
+      ? userName
       : this.getUserNameById(taskData.assigned_to);
 
     const newTask: Task = {
@@ -90,8 +95,8 @@ export class TaskService {
       context_type: taskData.context_type,
       family_id: taskData.family_id,
       family_name: this.getFamilyNameById(taskData.family_id),
-      created_by: currentUserId,
-      created_by_name: currentUserName,
+      created_by: userId,
+      created_by_name: userName,
       assigned_to: taskData.assigned_to,
       assigned_to_name: assignedToName,
       status: 'todo', // Always start as todo
@@ -100,6 +105,12 @@ export class TaskService {
       due_time: taskData.due_time,
       tags: taskData.tags || [],
       notes: taskData.notes,
+      operation_type: taskData.operation_type,
+      custom_type_label: taskData.custom_type_label,
+      // Follow-up fields
+      needs_follow_up: taskData.needs_follow_up,
+      follow_up_date: taskData.follow_up_date,
+      follow_up_reason: taskData.follow_up_reason,
       created_at: now,
       updated_at: now,
     };
@@ -477,20 +488,279 @@ export class TaskService {
   }
 
   // ============================================================================
+  // TASK MANAGER — SNOOZE / FOLLOW-UP ENGINE
+  // ============================================================================
+
+  /**
+   * Snooze a task — sets it to 'waiting_on_client' and records the follow-up date.
+   * The task will disappear from the Active Desk until the snooze_date arrives.
+   */
+  static snoozeTask(
+    taskId: string,
+    snoozeDate: string,
+    snoozeReason: string,
+    currentUserId: string,
+    currentUserName: string
+  ): Task | null {
+    const allTasks = this.getAllTasks();
+    const taskIndex = allTasks.findIndex((t) => t.id === taskId);
+    if (taskIndex === -1) return null;
+
+    const task = allTasks[taskIndex];
+    const now = new Date().toISOString();
+
+    const snoozedTask: Task = {
+      ...task,
+      status: 'waiting_on_client',
+      snooze_date: snoozeDate,
+      snooze_reason: snoozeReason,
+      snooze_count: (task.snooze_count || 0) + 1,
+      snoozed_at: now,
+      is_follow_up_due: false,
+      waitingOnWhat: snoozeReason,
+      updated_at: now,
+    };
+
+    allTasks[taskIndex] = snoozedTask;
+    this.saveTasks(allTasks);
+    return snoozedTask;
+  }
+
+  /**
+   * Resurface snoozed tasks — checks all snoozed tasks and flips any whose
+   * snooze_date has arrived back to 'todo' with the is_follow_up_due flag.
+   * Call this on dashboard load.
+   */
+  static resurfaceSnoozedTasks(
+    currentUserId: string,
+    currentUserName: string
+  ): Task[] {
+    const allTasks = this.getAllTasks();
+    const now = new Date();
+    const resurfaced: Task[] = [];
+
+    allTasks.forEach((task, index) => {
+      if (
+        task.status === 'waiting_on_client' &&
+        task.snooze_date &&
+        !isBefore(now, startOfDay(parseISO(task.snooze_date)))
+      ) {
+        const updated: Task = {
+          ...task,
+          status: 'todo',
+          is_follow_up_due: true,
+          updated_at: now.toISOString(),
+        };
+        allTasks[index] = updated;
+        resurfaced.push(updated);
+      }
+    });
+
+    if (resurfaced.length > 0) {
+      this.saveTasks(allTasks);
+    }
+
+    return resurfaced;
+  }
+
+  /**
+   * Get stats for the Task Manager "Clean Desk" dashboard metrics row.
+   */
+  static getTaskManagerStats(
+    userRole: 'admin' | 'rm' | 'family',
+    userId: string,
+    familyIds?: string[]
+  ): TaskManagerStats {
+    const tasks = this.getTasks(userRole, userId, familyIds);
+    const now = new Date();
+    const weekStart = startOfWeek(now);
+
+    return {
+      urgent_followups: tasks.filter(
+        (t) => t.is_follow_up_due && t.status !== 'done'
+      ).length,
+      pending_client_action: tasks.filter(
+        (t) =>
+          t.status === 'waiting_on_client' ||
+          t.status === 'pending_document_from_client' ||
+          t.status === 'blocked'
+      ).length,
+      in_progress: tasks.filter(
+        (t) => t.status === 'in_progress' || t.status === 'in_review'
+      ).length,
+      completed_this_week: tasks.filter(
+        (t) =>
+          t.status === 'done' &&
+          t.completed_at &&
+          isAfter(parseISO(t.completed_at), weekStart)
+      ).length,
+    };
+  }
+
+  /**
+   * Get "Active Desk" tasks — only tasks the RM can act on right now.
+   * Excludes snoozed/waiting tasks unless their follow-up date has arrived.
+   */
+  static getActiveDesk(
+    userRole: 'admin' | 'rm' | 'family',
+    userId: string,
+    familyIds?: string[]
+  ): Task[] {
+    const tasks = this.getTasks(userRole, userId, familyIds);
+    return tasks.filter(
+      (t) =>
+        t.status === 'todo' ||
+        t.status === 'in_progress' ||
+        t.status === 'in_review'
+    );
+  }
+
+  /**
+   * Get snoozed tasks that are still incubating (not yet resurfaced).
+   */
+  static getSnoozedTasks(
+    userRole: 'admin' | 'rm' | 'family',
+    userId: string,
+    familyIds?: string[]
+  ): Task[] {
+    const tasks = this.getTasks(userRole, userId, familyIds);
+    return tasks.filter(
+      (t) =>
+        (t.status === 'waiting_on_client' ||
+          t.status === 'pending_document_from_client' ||
+          t.status === 'blocked') &&
+        !t.is_follow_up_due
+    );
+  }
+
+  // ============================================================================
+  // ACTIVITY LOG (SYNTHETIC)
+  // ============================================================================
+
+  /**
+   * Generate a synthetic activity log from existing task fields.
+   * No separate storage — derives entries from created_at, snoozed_at, completed_at, etc.
+   */
+  static getTaskActivityLog(taskId: string): TaskActivityLogEntry[] {
+    const task = this.getTaskById(taskId);
+    if (!task) return [];
+
+    const entries: TaskActivityLogEntry[] = [];
+    let entryIndex = 0;
+
+    // 1. Created
+    entries.push({
+      id: `${taskId}-log-${entryIndex++}`,
+      task_id: taskId,
+      action_type: 'created',
+      action_by: task.created_by,
+      action_by_name: task.created_by_name,
+      action_at: task.created_at,
+      details: `Task created: "${task.title}"`,
+      metadata: { operation_type: task.operation_type, priority: task.priority },
+    });
+
+    // 2. Assignment (if different from creator)
+    if (task.assigned_at && task.assigned_by && task.assigned_by !== task.created_by) {
+      entries.push({
+        id: `${taskId}-log-${entryIndex++}`,
+        task_id: taskId,
+        action_type: 'assigned',
+        action_by: task.assigned_by,
+        action_by_name: task.assigned_by_name || 'System',
+        action_at: task.assigned_at,
+        details: `Assigned to ${task.assigned_to_name}`,
+      });
+    }
+
+    // 3. Snooze events (we can infer snooze_count worth of snoozes, but only have the latest timestamp)
+    if (task.snoozed_at && task.snooze_count && task.snooze_count > 0) {
+      // If snoozed multiple times, show a summary for earlier snoozes
+      if (task.snooze_count > 1) {
+        entries.push({
+          id: `${taskId}-log-${entryIndex++}`,
+          task_id: taskId,
+          action_type: 'snoozed',
+          action_by: task.assigned_to,
+          action_by_name: task.assigned_to_name,
+          action_at: task.created_at, // Approximate — we only track the latest snooze
+          details: `Previously snoozed ${task.snooze_count - 1} time${task.snooze_count > 2 ? 's' : ''}`,
+        });
+      }
+
+      // Latest snooze
+      entries.push({
+        id: `${taskId}-log-${entryIndex++}`,
+        task_id: taskId,
+        action_type: 'snoozed',
+        action_by: task.assigned_to,
+        action_by_name: task.assigned_to_name,
+        action_at: task.snoozed_at,
+        details: `Snoozed — ${task.snooze_reason || 'No reason specified'}. Follow-up: ${task.snooze_date || 'not set'}`,
+        metadata: { snooze_date: task.snooze_date, snooze_reason: task.snooze_reason },
+      });
+    }
+
+    // 4. Resurfaced
+    if (task.is_follow_up_due) {
+      entries.push({
+        id: `${taskId}-log-${entryIndex++}`,
+        task_id: taskId,
+        action_type: 'resurfaced',
+        action_by: 'system',
+        action_by_name: 'System',
+        action_at: task.updated_at,
+        details: 'Follow-up date arrived — task resurfaced to Active Desk',
+      });
+    }
+
+    // 5. Status change to in_progress
+    if (task.status === 'in_progress' || task.status === 'in_review' || task.status === 'done') {
+      entries.push({
+        id: `${taskId}-log-${entryIndex++}`,
+        task_id: taskId,
+        action_type: 'status_changed',
+        action_by: task.assigned_to,
+        action_by_name: task.assigned_to_name,
+        action_at: task.updated_at,
+        details: task.status === 'done' ? 'Marked as in progress' : `Status changed to "${task.status}"`,
+      });
+    }
+
+    // 6. Completed
+    if (task.status === 'done' && task.completed_at) {
+      entries.push({
+        id: `${taskId}-log-${entryIndex++}`,
+        task_id: taskId,
+        action_type: 'completed',
+        action_by: task.completed_by || task.assigned_to,
+        action_by_name: task.completed_by_name || task.assigned_to_name,
+        action_at: task.completed_at,
+        details: task.completion_notes ? `Completed — ${task.completion_notes}` : 'Task completed',
+      });
+    }
+
+    // Sort chronologically
+    entries.sort((a, b) => new Date(a.action_at).getTime() - new Date(b.action_at).getTime());
+
+    return entries;
+  }
+
+  // ============================================================================
   // PRIVATE HELPER METHODS
   // ============================================================================
 
   /**
    * Get all tasks from localStorage
    */
-  private static getAllTasks(): Task[] {
+  static getAllTasks(): Task[] {
     return LocalStorageService.get<Task[]>(STORAGE_KEY, []);
   }
 
   /**
    * Save tasks to localStorage
    */
-  private static saveTasks(tasks: Task[]): void {
+  static saveTasks(tasks: Task[]): void {
     LocalStorageService.set(STORAGE_KEY, tasks);
   }
 

@@ -20,7 +20,8 @@ export interface Family {
   name: string;
   primaryContactId: string;
   members: FamilyMember[];
-  assignedRMId?: string;  // Assigned Relationship Manager
+  assignedRMIds: string[];   // Assigned Relationship Managers (multiple)
+  assignedBOIds: string[];   // Assigned Back Office users (multiple)
 
   // Wealth Management Fields
   total_aum?: number;
