@@ -20,6 +20,26 @@ const STORAGE_KEY = 'nrp_crm_tasks';
 
 export class TaskService {
   // ============================================================================
+  // HELPER METHODS
+  // ============================================================================
+
+  /**
+   * Safely parse ISO date string, returning null if invalid
+   */
+  private static safeParseDateISO(dateString: string | undefined): Date | null {
+    if (!dateString) return null;
+    try {
+      const date = parseISO(dateString);
+      // Check if the date is valid
+      if (isNaN(date.getTime())) return null;
+      return date;
+    } catch (error) {
+      console.warn(`Invalid date string: ${dateString}`, error);
+      return null;
+    }
+  }
+
+  // ============================================================================
   // CRUD OPERATIONS
   // ============================================================================
 
@@ -319,21 +339,25 @@ export class TaskService {
       // Count by priority
       stats.by_priority[task.priority]++;
 
+      // Parse due date safely
+      const dueDate = this.safeParseDateISO(task.due_date);
+
       // Overdue tasks (past due date and not done)
-      if (task.status !== 'done' && isAfter(now, parseISO(task.due_date))) {
+      if (dueDate && task.status !== 'done' && isAfter(now, dueDate)) {
         stats.overdue++;
       }
 
       // Due today
-      if (task.status !== 'done' && isToday(parseISO(task.due_date))) {
+      if (dueDate && task.status !== 'done' && isToday(dueDate)) {
         stats.due_today++;
       }
 
       // Due this week
       if (
+        dueDate &&
         task.status !== 'done' &&
-        isAfter(parseISO(task.due_date), weekStart) &&
-        isBefore(parseISO(task.due_date), weekEnd)
+        isAfter(dueDate, weekStart) &&
+        isBefore(dueDate, weekEnd)
       ) {
         stats.due_this_week++;
       }

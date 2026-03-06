@@ -150,7 +150,7 @@ export default function BackOfficeTaskManagerPage() {
     };
 
     return (
-        <ConsoleLayout hideContextPanel>
+        <ConsoleLayout>
             <motion.div
                 variants={pageVariants}
                 initial="initial"

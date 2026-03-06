@@ -61,8 +61,9 @@ export class PortfolioService {
    * Calculate complete portfolio summary with all metrics
    */
   static calculatePortfolioSummary(portfolio: Portfolio): Portfolio {
-    const totalValue = portfolio.holdings.reduce((sum, h) => sum + h.current_value, 0);
-    const totalInvested = portfolio.holdings.reduce((sum, h) => sum + h.invested_value, 0);
+    const holdings = portfolio.holdings || [];
+    const totalValue = holdings.reduce((sum, h) => sum + h.current_value, 0);
+    const totalInvested = holdings.reduce((sum, h) => sum + h.invested_value, 0);
     const totalGain = totalValue - totalInvested;
     const totalGainPercent = totalInvested > 0 ? (totalGain / totalInvested) * 100 : 0;
 
@@ -72,7 +73,7 @@ export class PortfolioService {
       total_invested: totalInvested,
       total_gain: totalGain,
       total_gain_percent: totalGainPercent,
-      asset_allocation: this.calculateAssetAllocation(portfolio.holdings),
+      asset_allocation: this.calculateAssetAllocation(holdings),
       last_updated: new Date().toISOString(),
     };
   }

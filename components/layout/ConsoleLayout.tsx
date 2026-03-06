@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import { SlimSidebar } from "./SlimSidebar";
-import { ContextPanel } from "./ContextPanel";
-import { PanelRightClose, PanelRightOpen, Search, Menu } from "lucide-react";
+import { Search, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MobileSidebar } from "./MobileSidebar"; // Reuse mobile sidebar for small screens
 
-export function ConsoleLayout({ children, hideContextPanel = false }: { children: React.ReactNode; hideContextPanel?: boolean }) {
-    const [showRightPanel, setShowRightPanel] = useState(!hideContextPanel);
+export function ConsoleLayout({ children }: { children: React.ReactNode }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
@@ -40,31 +38,17 @@ export function ConsoleLayout({ children, hideContextPanel = false }: { children
                     </div>
 
                     <div className="flex items-center gap-2">
-                        {!hideContextPanel && (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setShowRightPanel(!showRightPanel)}
-                                className="text-muted-foreground hover:text-foreground hidden lg:flex"
-                            >
-                                {showRightPanel ? <PanelRightClose className="h-5 w-5" /> : <PanelRightOpen className="h-5 w-5" />}
-                            </Button>
-                        )}
+                        {/* Context panel removed */}
                     </div>
                 </header>
 
                 {/* Scrollable Content */}
                 <main className="flex-1 overflow-y-auto custom-scrollbar p-0">
-                    <div className={`mx-auto animate-in fade-in duration-500 min-h-full ${hideContextPanel ? '' : 'max-w-7xl'}`}>
+                    <div className="mx-auto animate-in fade-in duration-500 min-h-full">
                         {children}
                     </div>
                 </main>
             </div>
-
-            {/* 3. Right Context Panel (Toggleable) */}
-            {!hideContextPanel && (
-                <ContextPanel isVisible={showRightPanel} onClose={() => setShowRightPanel(false)} />
-            )}
         </div>
     );
 }

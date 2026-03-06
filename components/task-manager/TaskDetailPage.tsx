@@ -172,7 +172,7 @@ export function TaskDetailPage({ taskId, backHref, currentUserId, currentUserNam
 
     if (loading) {
         return (
-            <ConsoleLayout hideContextPanel>
+            <ConsoleLayout>
                 <div className="flex items-center justify-center h-96">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
                 </div>
@@ -182,7 +182,7 @@ export function TaskDetailPage({ taskId, backHref, currentUserId, currentUserNam
 
     if (!task) {
         return (
-            <ConsoleLayout hideContextPanel>
+            <ConsoleLayout>
                 <div className="flex flex-col items-center justify-center h-96 gap-4">
                     <p className="text-muted-foreground">Task not found</p>
                     <Button variant="outline" onClick={() => router.push(backHref)}>
@@ -203,7 +203,7 @@ export function TaskDetailPage({ taskId, backHref, currentUserId, currentUserNam
     const dueDateValid = !isNaN(dueDate.getTime());
 
     return (
-        <ConsoleLayout hideContextPanel>
+        <ConsoleLayout>
             <motion.div
                 variants={pageVariants}
                 initial="initial"

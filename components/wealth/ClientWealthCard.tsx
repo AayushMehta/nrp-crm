@@ -44,8 +44,10 @@ export function ClientWealthCard({ client, onViewDetails }: ClientWealthCardProp
 
   // Get initials from family name
   const getInitials = (name: string): string => {
+    if (!name?.trim()) return '??';
     return name
       .split(' ')
+      .filter(word => word.length > 0)
       .map(word => word[0])
       .join('')
       .toUpperCase()

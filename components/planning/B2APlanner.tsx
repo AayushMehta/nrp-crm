@@ -321,7 +321,7 @@ export function B2APlanner({ initialData }: B2APlannerProps) {
                                                         <Cell key={i} fill={entry.fill} />
                                                     ))}
                                                 </Pie>
-                                                <Tooltip formatter={(v: number) => `${v}%`} />
+                                                <Tooltip formatter={(v: number | undefined) => v !== undefined ? `${v}%` : ''} />
                                             </PieChart>
                                         </ResponsiveContainer>
                                     </CardContent>
@@ -581,7 +581,7 @@ export function B2APlanner({ initialData }: B2APlannerProps) {
                             />
                             <Tooltip
                                 contentStyle={{ borderRadius: 8, fontSize: 12, border: "1px solid hsl(var(--border))" }}
-                                formatter={(v: number, name: string) => [formatIndianCurrency(v), name]}
+                                formatter={(v: number | undefined, name: string | undefined) => v !== undefined ? [formatIndianCurrency(v), name || ''] : ['', name || '']}
                             />
                             {/* Target reference line */}
                             <ReferenceLine y={targetWealth} stroke="#ef4444" strokeDasharray="6 4" strokeWidth={1.5}

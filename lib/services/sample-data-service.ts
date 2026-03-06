@@ -535,6 +535,8 @@ export class SampleDataService {
 
         // Family interface
         primaryContactId: "contact-sharma",
+        assignedRMIds: ["user-rm"],
+        assignedBOIds: [],
         members: [
           {
             id: "member-sharma-1",
@@ -594,6 +596,8 @@ export class SampleDataService {
 
         // Family interface
         primaryContactId: "contact-patel",
+        assignedRMIds: ["user-rm"],
+        assignedBOIds: [],
         members: [
           {
             id: "member-patel-1",
@@ -657,6 +661,8 @@ export class SampleDataService {
 
         // Family interface
         primaryContactId: "contact-kumar",
+        assignedRMIds: ["user-rm"],
+        assignedBOIds: [],
         members: [
           {
             id: "member-kumar-1",
@@ -720,6 +726,8 @@ export class SampleDataService {
 
         // Family interface
         primaryContactId: "contact-reddy",
+        assignedRMIds: ["user-rm"],
+        assignedBOIds: [],
         members: [
           {
             id: "member-reddy-1",
@@ -769,6 +777,8 @@ export class SampleDataService {
 
         // Family interface
         primaryContactId: "contact-gupta",
+        assignedRMIds: [],
+        assignedBOIds: [],
         members: [
           {
             id: "member-gupta-1",

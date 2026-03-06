@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export default function AdminPlanningPage() {
     return (
-        <ConsoleLayout hideContextPanel>
+        <ConsoleLayout>
             <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto space-y-8 pb-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

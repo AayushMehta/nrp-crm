@@ -63,6 +63,8 @@ export class ClientService {
 
       // Family interface compatibility
       primaryContactId: `contact-${Date.now()}`,
+      assignedRMIds: data.assigned_rm_id ? [data.assigned_rm_id] : [],
+      assignedBOIds: [],
       members: [{
         id: `member-${Date.now()}`,
         name: data.primary_contact_name,

@@ -292,7 +292,7 @@ export function ClientDetailDialog({
                     <p className="text-sm text-muted-foreground mb-2">Tags</p>
                     <div className="flex flex-wrap gap-2">
                       {client.tags.map((tag, index) => (
-                        <Badge key={index} variant="outline">
+                        <Badge key={`${tag}-${index}`} variant="outline">
                           {tag}
                         </Badge>
                       ))}

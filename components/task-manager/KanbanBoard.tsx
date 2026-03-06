@@ -47,7 +47,13 @@ const PRIORITY_CONFIG: Record<TaskPriority, { label: string; bg: string; text: s
 
 // ── Avatar Helper ──
 const getInitials = (name: string) => {
-    return name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+    if (!name?.trim()) return '??';
+    return name.split(' ')
+        .filter(w => w.length > 0)
+        .map(w => w[0])
+        .join('')
+        .substring(0, 2)
+        .toUpperCase();
 };
 
 const getAvatarColor = (name: string) => {

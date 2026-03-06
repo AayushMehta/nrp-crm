@@ -151,7 +151,7 @@ export default function RMTaskManagerPage() {
     };
 
     return (
-        <ConsoleLayout hideContextPanel>
+        <ConsoleLayout>
             <motion.div
                 variants={pageVariants}
                 initial="initial"

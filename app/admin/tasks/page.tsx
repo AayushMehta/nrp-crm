@@ -148,7 +148,7 @@ export default function AdminTaskManagerPage() {
     };
 
     return (
-        <ConsoleLayout hideContextPanel>
+        <ConsoleLayout>
             <motion.div
                 variants={pageVariants}
                 initial="initial"

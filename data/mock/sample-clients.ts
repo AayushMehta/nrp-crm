@@ -46,6 +46,8 @@ export const SAMPLE_CLIENTS: Client[] = [
 
     // Family interface
     primaryContactId: "family-1",
+    assignedRMIds: ["rm-1"],
+    assignedBOIds: [],
     members: [
       {
         id: "mem-1",
@@ -114,6 +116,8 @@ export const SAMPLE_CLIENTS: Client[] = [
 
     // Family interface
     primaryContactId: "family-2",
+    assignedRMIds: ["rm-1"],
+    assignedBOIds: [],
     members: [
       {
         id: "mem-3",
@@ -163,6 +167,8 @@ export const SAMPLE_CLIENTS: Client[] = [
 
     // Family interface
     primaryContactId: "contact-003",
+    assignedRMIds: [],
+    assignedBOIds: [],
     members: [
       {
         id: "mem-4",
@@ -224,6 +230,8 @@ export const SAMPLE_CLIENTS: Client[] = [
 
     // Family interface
     primaryContactId: "contact-004",
+    assignedRMIds: ["rm-1"],
+    assignedBOIds: [],
     members: [
       {
         id: "mem-5",
@@ -275,6 +283,8 @@ export const SAMPLE_CLIENTS: Client[] = [
 
     // Family interface
     primaryContactId: "contact-005",
+    assignedRMIds: [],
+    assignedBOIds: [],
     members: [
       {
         id: "mem-7",
